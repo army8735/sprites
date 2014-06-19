@@ -21,12 +21,14 @@
     "url": "git://github.com/army8735/sprites.git"
   },
   "keywords": [
-    "css sprites"
+    "css",
+    "sprite"
   ],
   "author": "army8735",
   "license": "MIT",
   "dependencies": {
-    "homunculus": "0.1.7"
+    "homunculus": "^0.3.0-1",
+    "jsdc": "^0.3.4-3"
   },
   "main": "./index",
   "engines": {
@@ -34,10 +36,14 @@
   },
   "readmeFilename": "README.md",
   "devDependencies": {
-    "expect.js": "^0.3.1",
-    "mocha": "^1.18.2",
     "blanket": "^1.1.6",
     "coveralls": "^2.10.0",
-    "mocha-lcov-reporter": "0.0.1"
+    "expect.js": "^0.3.1",
+    "gulp": "^3.6.0",
+    "gulp-clean": "^0.2.4",
+    "gulp-util": "^2.2.14",
+    "mocha": "^1.18.2",
+    "mocha-lcov-reporter": "0.0.1",
+    "through2": "^0.4.2"
   }
 }
