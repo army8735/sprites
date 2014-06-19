@@ -51,7 +51,7 @@ function recursion(node, res = []) {
           //防止同一个background设置多个背景图重复
           if(!history.hasOwnProperty(style.nid())) {
             history[style.nid()] = true;
-            var params = parse(style, key, value, node);
+            var params = parse(style, key, value);
             params.forEach(function(param) {
               var bgi = new BackgroundImage(param);
               res.push(bgi);
@@ -64,14 +64,14 @@ function recursion(node, res = []) {
   return res;
 }
 
-function parse(style, key, value, node) {
+function parse(style, key, value) {
   var block = style.parent();
   var leaves = block.leaves();
   var i = leaves.indexOf(style, 1);
-  leaves = leaves.slice(i + 1);
+  var copy = leaves.slice(i + 1);
   //后面的background会覆盖掉前面的
-  for(i = leaves.length - 1; i > -1; i--) {
-    var leaf = leaves[i];
+  for(i = copy.length - 1; i > -1; i--) {
+    var leaf = copy[i];
     if(leaf.name() == CssNode.STYLE
       && HASH.hasOwnProperty(leaf.first().token().content().toLowerCase())) {
       style = leaves[i];
@@ -86,20 +86,13 @@ function parse(style, key, value, node) {
   var hasP = key.first().token().content().toLowerCase() == 'background';
   value.leaves().forEach(function(leaf) {
     if(leaf.name() == CssNode.URL) {
-      var param = { url: {}, repeat: [], pos: [], units: [] };
-      var next = leaf;
-      while((next = next.next())
-        && next.name() == CssNode.TOKEN) {
-        var token = next.token();
-        if(token.type() == Token.STRING) {
-          param.url = {
-            'string': token.content(),
-            'index': token.sIndex()
-          };
-          break;
-        }
-      }
-      if(hasP && next) {
+      var url = leaf.leaf(2).token();
+      var param = { url: {
+          'string': url.content(),
+          'index': url.sIndex()
+        }, repeat: [], pos: [], units: [] };
+      if(hasP) {
+        var next = leaf;
         while((next = next.next())
           && next.name() == CssNode.TOKEN) {
           var token = next.token();
@@ -108,9 +101,9 @@ function parse(style, key, value, node) {
               'string': token.content(),
               'index': token.sIndex()
             });
-            next = next.next();
-            if(next && next.name() == CssNode.TOKEN) {
-              token = next.token();
+            var units = next.next();
+            if(units && units.name() == CssNode.TOKEN) {
+              token = units.token();
               if(token.type() == Token.UNITS) {
                 param.units.push({
                   'string': token.content(),

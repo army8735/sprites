@@ -5,6 +5,7 @@ Makefile
 .npmignore
 tests/
 demo/
+src/
 node_modules/
 gulpfile.js
 README.md
