@@ -13,7 +13,7 @@
   },
   "config": {
     "blanket": {
-      "pattern": ""
+      "pattern": "sprites/build"
     }
   },
   "repository": {
@@ -22,13 +22,13 @@
   },
   "keywords": [
     "css",
-    "sprite"
+    "sprite",
+    "auto"
   ],
   "author": "army8735",
   "license": "MIT",
   "dependencies": {
-    "homunculus": "^0.3.0-1",
-    "jsdc": "^0.3.4-3"
+    "homunculus": "^0.3.0-2"
   },
   "main": "./index",
   "engines": {
@@ -42,6 +42,7 @@
     "gulp": "^3.6.0",
     "gulp-clean": "^0.2.4",
     "gulp-util": "^2.2.14",
+    "jsdc": "^0.3.4-3",
     "mocha": "^1.18.2",
     "mocha-lcov-reporter": "0.0.1",
     "through2": "^0.4.2"

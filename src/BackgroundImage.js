@@ -1,6 +1,6 @@
 class BackgroundImage {
-  constructor(css) {
-    this.css = css;
+  constructor(params) {
+    this.params = params;
   }
 
   get image() {

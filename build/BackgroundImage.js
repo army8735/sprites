@@ -1,6 +1,6 @@
 
-  function BackgroundImage(css) {
-    this.css = css;
+  function BackgroundImage(params) {
+    this.params = params;
   }
 
   BackgroundImage.prototype.image={get image() {

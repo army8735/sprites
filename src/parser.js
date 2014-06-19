@@ -1,12 +1,33 @@
 module homunculus from 'homunculus';
-var CssParser = homunculus.getParser('css');
-var CssNode = homunculus.getNode('css');
+var CssNode = homunculus.getClass('node', 'css');
+var Token = homunculus.getClass('token');
 
-module BackgroundImage from 'BackgroundImage';
+module BackgroundImage from './BackgroundImage';
+
+var HASH = {
+  'background': true,
+  'background-image': true
+};
+var REPEAT = {
+  'no-repeat': true,
+  'repeat-x': true,
+  'repeat-y': true
+};
+var POSITION = {
+  'center': true,
+  'left': true,
+  'right': true,
+  'bottom': true
+};
+
+var history;
 
 export function bgis(css) {
-  var ast = CssParser.parse(css.string);
+  history = {};
+  var cssParser = homunculus.getParser('css');
+  var ast = cssParser.parse(css.string);
   var res = recursion(ast);
+  return res;
 }
 
 function recursion(node, res = []) {
@@ -14,26 +35,175 @@ function recursion(node, res = []) {
   var isVirtual = isToken && node.token().type() == Token.VIRTUAL;
   if(isToken) {
     if(!isVirtual) {
-      var token = node.token();
-      if(token.type() == CssNode.KEYWORD) {
-        var s = token.content().toLowerCase();
-        if(s == 'background'
-          || s == 'background-image') {
-          var params = parse(token);
-          var bgi = new BackgroundImage(params);
-          res.push(bgi);
+    }
+  }
+  else {
+    node.leaves().forEach(function(leaf) {
+      recursion(leaf, res);
+    });
+    if(node.name() == CssNode.URL) {
+      var value = node.parent();
+      if(value.name() == CssNode.VALUE) {
+        var key = value.prev().prev();
+        var s = key.first().token().content().toLowerCase();
+        if(HASH.hasOwnProperty(s)) {
+          var style = key.parent();
+          //防止同一个background设置多个背景图重复
+          if(!history.hasOwnProperty(style.nid())) {
+            history[style.nid()] = true;
+            var params = parse(style, key, value, node);
+            params.forEach(function(param) {
+              var bgi = new BackgroundImage(param);
+              res.push(bgi);
+            });
+          }
         }
       }
     }
   }
-  else {
-    node.leaves().forEach(function(leaf, i) {
-      recursion(leaf, res);
-    });
-  }
   return res;
 }
 
-function parse(token) {
-
+function parse(style, key, value, node) {
+  var block = style.parent();
+  var leaves = block.leaves();
+  var i = leaves.indexOf(style, 1);
+  leaves = leaves.slice(i + 1);
+  //后面的background会覆盖掉前面的
+  for(i = leaves.length - 1; i > -1; i--) {
+    var leaf = leaves[i];
+    if(leaf.name() == CssNode.STYLE
+      && HASH.hasOwnProperty(leaf.first().token().content().toLowerCase())) {
+      style = leaves[i];
+      key = style.first();
+      value = style.leaf(2);
+      leaves = leaves.slice(i);
+      break;
+    }
+  }
+  var params = [];
+  //仅background可能写repeat和position，background-image没有
+  var hasP = key.first().token().content().toLowerCase() == 'background';
+  value.leaves().forEach(function(leaf) {
+    if(leaf.name() == CssNode.URL) {
+      var param = { url: {}, repeat: [], pos: [], units: [] };
+      var next = leaf;
+      while((next = next.next())
+        && next.name() == CssNode.TOKEN) {
+        var token = next.token();
+        if(token.type() == Token.STRING) {
+          param.url = {
+            'string': token.content(),
+            'index': token.sIndex()
+          };
+          break;
+        }
+      }
+      if(hasP && next) {
+        while((next = next.next())
+          && next.name() == CssNode.TOKEN) {
+          var token = next.token();
+          if(token.type() == Token.NUMBER) {
+            param.pos.push({
+              'string': token.content(),
+              'index': token.sIndex()
+            });
+            next = next.next();
+            if(next && next.name() == CssNode.TOKEN) {
+              token = next.token();
+              if(token.type() == Token.UNITS) {
+                param.units.push({
+                  'string': token.content(),
+                  'index': token.sIndex()
+                });
+              }
+              else {
+                param.units.push(null);
+              }
+            }
+            else {
+              param.units.push(null);
+            }
+          }
+          else if(token.type() == Token.PROPERTY) {
+            var s = token.content().toLowerCase();
+            if(REPEAT.hasOwnProperty(s)) {
+              param.repeat.push({
+                'string': token.content(),
+                'index': token.sIndex()
+              });
+            }
+          }
+          else if(token.type() == Token.SIGN
+            && [',', ';', '}'].indexOf(token.content()) > -1) {
+            break;
+          }
+        }
+      }
+      params.push(param);
+    }
+  });
+  //后面的background-repeat会覆盖掉前面的所有url
+  for(i = leaves.length - 1; i > -1; i--) {
+    if(leaves[i].name().toLowerCase() == 'background-repeat') {
+      value = leaves[i].leaf(2);
+      var rpx = value.first().token();
+      var rpy = value.last().token();
+      params.forEach(function(param) {
+        param.repeat = [{
+          'string': rpx.content(),
+          'index': rpx.sIndex()
+        }, {
+          'string': rpy.content(),
+          'index': rpy.sIndex()
+        }];
+      });
+      break;
+    }
+  }
+  //后面的background-position会覆盖掉前面的相应索引的url
+  for(i = leaves.length - 1; i > -1; i--) {
+    if(leaves[i].name().toLowerCase() == 'background-position') {
+      value = leaves[i].leaf(2);
+      var index = 0;
+      var index2 = 0;
+      var param = params[index];
+      value.leaves().forEach(function(leaf) {
+        if(leaf.name() == CssNode.TOKEN) {
+          var token = leaf.first().token();
+          var s = token.content().toLowerCase();
+          if(token.type() == Token.NUMBER
+            || POSITION.hasOwnProperty(s)) {
+            param.repeat[index2] = {
+              'string': token.content(),
+              'index': token.sIndex()
+            };
+            index2++;
+          }
+          else if(token.type() == Token.SIGN &&
+            token.content() == ',') {
+            param = params[++index];
+            index2 = 0;
+          }
+        }
+      });
+      break;
+    }
+  }
+  //整体过滤掉position不是数字的
+//  for(i = params.length; i > -1; i--) {
+//    var param = params[i];
+//    if(param.pos.length) {
+//      var notNum = false;
+//      param.pos.forEach(function(pos) {
+//        if(POSITION.hasOwnProperty(pos.string.toLowerCase())) {
+//          notNum = true;
+//        }
+//      });
+//      if(notNum) {
+//        params.splice(i, 1);
+//      }
+//    }
+//  }
+  return params;
 }
