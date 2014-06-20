@@ -54,6 +54,24 @@
   Object.defineProperty(BackgroundImage.prototype, "sunitsy", {get :function() {
     return this.sunits[1];
   }});
+  Object.defineProperty(BackgroundImage.prototype, "width", {get :function() {
+    return this.params.width;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "wunits", {get :function() {
+    return this.params.wunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "height", {get :function() {
+    return this.params.height;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "hunits", {get :function() {
+    return this.params.hunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "padding", {get :function() {
+    return this.params.padding;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "punits", {get :function() {
+    return this.params.punits;
+  }});
 
 
 module.exports=BackgroundImage;

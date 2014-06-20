@@ -250,4 +250,78 @@ describe('bgis test', function() {
     expect(res[0].units.length).to.eql(2);
     expect(res[1].units.length).to.eql(2);
   });
+  it('width', function() {
+    var param = [{
+      'string': 'p{background:url(x);width:0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.not.eql(null);
+    expect(res.width.string).to.eql(0);
+    expect(res.wunits).to.eql(null);
+  });
+  it('width with units', function() {
+    var param = [{
+      'string': 'p{background:url(x);width:0px}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.not.eql(null);
+    expect(res.width.string).to.eql(0);
+    expect(res.wunits.string).to.eql('px');
+  });
+  it('no width', function() {
+    var param = [{
+      'string': 'p{background:url(x);}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.eql(null);
+  });
+  it('height', function() {
+    var param = [{
+      'string': 'p{background:url(x);height:0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.not.eql(null);
+    expect(res.height.string).to.eql(0);
+  });
+  it('height with units', function() {
+    var param = [{
+      'string': 'p{background:url(x);height:0px}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.not.eql(null);
+    expect(res.height.string).to.eql(0);
+    expect(res.hunits.string).to.eql('px');
+  });
+  it('no height', function() {
+    var param = [{
+      'string': 'p{background:url(x);}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.eql(null);
+  });
+  it('padding', function() {
+    var param = [{
+      'string': 'p{background:url(x);padding:0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding).to.not.eql(null);
+    expect(res.padding.length).to.eql(1);
+    expect(res.punits.length).to.eql(1);
+  });
+  it('padding with units', function() {
+    var param = [{
+      'string': 'p{background:url(x);padding:0px}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding.length).to.eql(1);
+    expect(res.padding[0].string).to.eql(0);
+    expect(res.punits[0].string).to.eql('px');
+  });
+  it('no padding', function() {
+    var param = [{
+      'string': 'p{background:url(x);}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding).to.eql(null);
+  });
 });

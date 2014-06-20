@@ -77,7 +77,7 @@ function parse(style, key, value) {
   var block = style.parent();
   var leaves = block.leaves();
   var i = leaves.indexOf(style, 1);
-  var copy = leaves.slice(i + 1);
+  var copy = leaves.slice(i + 1, leaves.length - 1);
   //后面的background会覆盖掉前面的
   for(i = copy.length - 1; i > -1; i--) {
     var leaf = copy[i];
@@ -97,6 +97,9 @@ function parse(style, key, value) {
   repeat(params, hasP ? copy : leaves);
   position(params, hasP ? copy : leaves);
   size(params, leaves);
+  width(params, leaves);
+  height(params, leaves);
+  padding(params, leaves);
   media(params, block);
   return params;
 }
@@ -109,7 +112,17 @@ function bgi(key, value, hasP) {
       var param = { url: {
         'string': url.content(),
         'index': url.sIndex()
-      }, repeat: [], position: [], units: [], size:[], sunits: [] };
+      }, repeat: [],
+        position: [],
+        units: [], size:[],
+        sunits: [],
+        width: null,
+        height: null,
+        wunits: null,
+        hunits: null,
+        padding: null,
+        punits: null
+      };
       if(hasP) {
         var next = leaf;
         while((next = next.next())
@@ -276,6 +289,104 @@ function size(params, leaves) {
           }
         });
         break;
+      }
+    }
+  }
+}
+function width(params, leaves) {
+  //后面的width会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'width') {
+        var value = style.leaf(2);
+        var node = value.first();
+        var token = node.token();
+        var width = {
+          'string': token.content(),
+          'index': token.sIndex()
+        };
+        var units = null;
+        node = node.next();
+        if(node && node.token().type() == Token.UNITS) {
+          units = {
+            'string': node.token().content(),
+            'index': node.token().sIndex()
+          }
+        }
+        params.forEach(function(param) {
+          param.width = width;
+          param.wunits = units;
+        });
+      }
+    }
+  }
+}
+function height(params, leaves) {
+  //后面的width会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'height') {
+        var value = style.leaf(2);
+        var node = value.first();
+        var token = node.token();
+        var height = {
+          'string': token.content(),
+          'index': token.sIndex()
+        };
+        var units = null;
+        node = node.next();
+        if(node && node.token().type() == Token.UNITS) {
+          units = {
+            'string': node.token().content(),
+            'index': node.token().sIndex()
+          }
+        }
+        params.forEach(function(param) {
+          param.height = height;
+          param.hunits = units;
+        });
+      }
+    }
+  }
+}
+function padding(params, leaves) {
+  //后面的width会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'padding') {
+        var value = style.leaf(2);
+        var leaves2 = value.leaves();
+        var padding = [];
+        var units = [];
+        leaves2.forEach(function(leaf) {
+          if(leaf && leaf.token().type() == Token.NUMBER) {
+            var token = leaf.token();
+            padding.push({
+              'string': token.content(),
+              'index': token.sIndex()
+            });
+          }
+          leaf = leaf.next();
+          if(leaf && leaf.token().type() == Token.UNITS) {
+            units.push({
+              'string': leaf.token().content(),
+              'index': leaf.token().sIndex()
+            });
+          }
+          else {
+            units.push(null);
+          }
+        });
+        params.forEach(function(param) {
+          param.padding = padding;
+          param.punits = units;
+        });
       }
     }
   }

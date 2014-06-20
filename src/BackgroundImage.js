@@ -54,6 +54,24 @@ class BackgroundImage {
   get sunitsy() {
     return this.sunits[1];
   }
+  get width() {
+    return this.params.width;
+  }
+  get wunits() {
+    return this.params.wunits;
+  }
+  get height() {
+    return this.params.height;
+  }
+  get hunits() {
+    return this.params.hunits;
+  }
+  get padding() {
+    return this.params.padding;
+  }
+  get punits() {
+    return this.params.punits;
+  }
 }
 
 export default BackgroundImage;
