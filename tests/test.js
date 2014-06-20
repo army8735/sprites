@@ -168,6 +168,20 @@ describe('bgis test', function() {
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.radio).to.eql(2);
   });
+  it('unknow media is 1x', function() {
+    var param = [{
+      'string': '@media {p{background:url(x)}}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.radio).to.eql(1);
+  });
+  it('media error is 1x', function() {
+    var param = [{
+      'string': '@media (min--moz-device-pixel-ratio: error){p{background:url(x)}}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.radio).to.eql(1);
+  });
   it('background-repeat', function() {
     var param = [{
       'string': 'p{background:url(x);background-repeat:no-repeat}'
