@@ -3,21 +3,29 @@ var CssNode = homunculus.getClass('node', 'css');
 var Token = homunculus.getClass('token');
 
 module BackgroundImage from './BackgroundImage';
+module join from './join';
 
 var HASH = {
   'background': true,
   'background-image': true
 };
 var REPEAT = {
+  'repeat': true,
   'no-repeat': true,
   'repeat-x': true,
-  'repeat-y': true
+  'repeat-y': true,
+  'round': true,
+  'space': true
 };
 var POSITION = {
   'center': true,
   'left': true,
   'right': true,
   'bottom': true
+};
+var DP_RADIO = {
+  'min-device-pixel-ratio': true,
+  'min--moz-device-pixel-ratio': true
 };
 
 var history;
@@ -69,17 +77,18 @@ function parse(style, key, value) {
     var leaf = copy[i];
     if(leaf.name() == CssNode.STYLE
       && HASH.hasOwnProperty(leaf.first().token().content().toLowerCase())) {
-      style = leaves[i];
+      style = leaf;
       key = style.first();
       value = style.leaf(2);
       leaves = leaves.slice(i);
       break;
     }
   }
+  history[style.nid()] = true;
   var params = bgi(key, value);
   repeat(params, leaves);
   position(params, leaves);
-  media(params, block);
+  media(params, style);
   return params;
 }
 function bgi(key, value) {
@@ -92,14 +101,14 @@ function bgi(key, value) {
       var param = { url: {
         'string': url.content(),
         'index': url.sIndex()
-      }, repeat: [], pos: [], units: [] };
+      }, repeat: [], position: [], units: [] };
       if(hasP) {
         var next = leaf;
         while((next = next.next())
           && next.name() == CssNode.TOKEN) {
           var token = next.token();
           if(token.type() == Token.NUMBER) {
-            param.pos.push({
+            param.position.push({
               'string': token.content(),
               'index': token.sIndex()
             });
@@ -112,12 +121,6 @@ function bgi(key, value) {
                   'index': token.sIndex()
                 });
               }
-              else {
-                param.units.push(null);
-              }
-            }
-            else {
-              param.units.push(null);
             }
           }
           else if(token.type() == Token.PROPERTY) {
@@ -191,6 +194,42 @@ function position(params, leaves) {
     }
   }
 }
-function media(params, block) {
-  //
+function media(params, style) {
+  var parent = style.parent();
+  outer:
+  while(parent = parent.parent()) {
+    if(parent.name() == CssNode.MEDIA) {
+      var mql = parent.leaf(1);
+      var leaves = mql.leaves();
+      for(var i = 0; i < leaves.length; i++) {
+        var mq = leaves[i];
+        var leaves2 = mq.leaves();
+        for(var j = 0; j < leaves2.length; j++) {
+          var expression = leaves2[j];
+          if(expression.name() == CssNode.EXPR) {
+            var key = expression.leaf(1);
+            var value = expression.leaf(3);
+            if(key && key.name() == CssNode.KEY
+              && value && value.name() == CssNode.VALUE) {
+              if(DP_RADIO.hasOwnProperty(key.last().token().content().toLowerCase())) {
+                var val = join(value);
+                try {
+                  val = parseInt(val);
+                  params.forEach(function(param) {
+                    param.radio = val;
+                  });
+                  return;
+                } catch(e) {
+                  break outer;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  params.forEach(function(param) {
+    param.radio = 1;
+  });
 }
