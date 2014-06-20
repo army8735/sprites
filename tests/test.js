@@ -28,6 +28,8 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(0);
     expect(res.units.length).to.eql(0);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background url', function() {
     var param = [{
@@ -54,6 +56,8 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(1);
     expect(res.position.length).to.eql(0);
     expect(res.units.length).to.eql(0);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background with 2 repeat', function() {
     var param = [{
@@ -64,6 +68,8 @@ describe('bgis test', function() {
     expect(res.repeat[1]).to.not.eql(res.repeat[0]);
     expect(res.position.length).to.eql(0);
     expect(res.units.length).to.eql(0);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background with 1 position', function() {
     var param = [{
@@ -73,6 +79,8 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(1);
     expect(res.units.length).to.eql(1);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background with 2 position', function() {
     var param = [{
@@ -82,6 +90,8 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(2);
     expect(res.units.length).to.eql(2);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background with 1 units', function() {
     var param = [{
@@ -91,6 +101,8 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(1);
     expect(res.units.length).to.eql(1);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
   });
   it('background with 1 units but 2 position', function() {
     var param = [{
@@ -100,6 +112,40 @@ describe('bgis test', function() {
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(2);
     expect(res.units.length).to.eql(2);
+    expect(res.size.length).to.eql(0);
+    expect(res.sunits.length).to.eql(0);
+  });
+  it('background with 1 units but 2 position', function() {
+    var param = [{
+      'string': 'p{background:url(x) 0px 0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.repeat.length).to.eql(0);
+    expect(res.position.length).to.eql(2);
+    expect(res.units.length).to.eql(2);
+    expect(res.size.length).to.eql(0);
+  });
+  it('background with 1 size', function() {
+    var param = [{
+      'string': 'p{background:url(x);background-size:0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.repeat.length).to.eql(0);
+    expect(res.position.length).to.eql(0);
+    expect(res.units.length).to.eql(0);
+    expect(res.size.length).to.eql(1);
+    expect(res.sunits.length).to.eql(1);
+  });
+  it('background with 2 size', function() {
+    var param = [{
+      'string': 'p{background:url(x);background-size:0 auto}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.repeat.length).to.eql(0);
+    expect(res.position.length).to.eql(0);
+    expect(res.units.length).to.eql(0);
+    expect(res.size.length).to.eql(2);
+    expect(res.sunits.length).to.eql(2);
   });
   it('no media should has 1x radio', function() {
     var param = [{

@@ -36,6 +36,24 @@ class BackgroundImage {
   get radio() {
     return this.params.radio;
   }
+  get size() {
+    return this.params.size;
+  }
+  get sizex() {
+    return this.size[0];
+  }
+  get sizey() {
+    return this.size[1];
+  }
+  get sunits() {
+    return this.params.sunits;
+  }
+  get sunitsx() {
+    return this.sunits[0];
+  }
+  get sunitsy() {
+    return this.sunits[1];
+  }
 }
 
 export default BackgroundImage;

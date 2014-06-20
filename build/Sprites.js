@@ -18,7 +18,7 @@ var parser=require('./parser');
     this.csses.forEach(function(css) {
       if(!css.hasOwnProperty('string')) {
         if(!css.hasOwnProperty('path')) {
-          throw new Error('css file missing path: ' + JSON.stringify(css));
+          throw new Error('css file missing path when no string: ' + JSON.stringify(css));
         }
         css.string = fs.readFileSync(css.path, { encoding: 'utf-8' });
       }

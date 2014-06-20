@@ -23,6 +23,12 @@ var POSITION = {
   'right': true,
   'bottom': true
 };
+var SIZE = {
+  'auto': true,
+  'cover': true,
+  'right': true,
+  'contain': true
+};
 var DP_RADIO = {
   'min-device-pixel-ratio': true,
   'min--moz-device-pixel-ratio': true
@@ -90,6 +96,7 @@ function parse(style, key, value) {
   //background会覆盖掉前面的设置，background-image则不会，据此传入整个节点或后面兄弟节点
   repeat(params, hasP ? copy : leaves);
   position(params, hasP ? copy : leaves);
+  size(params, leaves);
   media(params, block);
   return params;
 }
@@ -102,7 +109,7 @@ function bgi(key, value, hasP) {
       var param = { url: {
         'string': url.content(),
         'index': url.sIndex()
-      }, repeat: [], position: [], units: [] };
+      }, repeat: [], position: [], units: [], size:[], sunits: [] };
       if(hasP) {
         var next = leaf;
         while((next = next.next())
@@ -218,6 +225,52 @@ function position(params, leaves) {
               }
               else {
                 param.units.push(null);
+              }
+            }
+          }
+        });
+        break;
+      }
+    }
+  }
+}
+
+function size(params, leaves) {
+  //后面的background-size会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'background-size') {
+        var index = 0;
+        var count = 0;
+        var value = leaves[i].leaf(2);
+        var param;
+        value.leaves().forEach(function(leaf) {
+          if(leaf.name() == CssNode.TOKEN) {
+            var token = leaf.token();
+            var s = token.content().toLowerCase();
+            if(token.type() == Token.NUMBER
+              || SIZE.hasOwnProperty(s)) {
+              if(count % 2 == 0) {
+                param = params[index++];
+                param.size = [];
+                param.sunits = [];
+              }
+              count++;
+              param.size.push({
+                'string': token.content(),
+                'index': token.sIndex()
+              });
+              var next = leaf.next();
+              if(next && next.token().type() == Token.UNITS) {
+                param.sunits.push({
+                  'string': token.content(),
+                  'index': token.sIndex()
+                });
+              }
+              else {
+                param.sunits.push(null);
               }
             }
           }

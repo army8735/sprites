@@ -36,6 +36,24 @@
   Object.defineProperty(BackgroundImage.prototype, "radio", {get :function() {
     return this.params.radio;
   }});
+  Object.defineProperty(BackgroundImage.prototype, "size", {get :function() {
+    return this.params.size;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "sizex", {get :function() {
+    return this.size[0];
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "sizey", {get :function() {
+    return this.size[1];
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "sunits", {get :function() {
+    return this.params.sunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "sunitsx", {get :function() {
+    return this.sunits[0];
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "sunitsy", {get :function() {
+    return this.sunits[1];
+  }});
 
 
 module.exports=BackgroundImage;
