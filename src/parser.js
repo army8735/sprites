@@ -122,6 +122,12 @@ function bgi(key, value, hasP) {
                   'index': token.sIndex()
                 });
               }
+              else {
+                param.units.push(null);
+              }
+            }
+            else {
+              param.units.push(null);
             }
           }
           else if(token.type() == Token.PROPERTY) {
@@ -151,21 +157,24 @@ function repeat(params, leaves) {
     if(style.name() == CssNode.STYLE) {
       var key = style.first();
       if(key.first().token().content().toLowerCase() == 'background-repeat') {
-        var value = style.leaf(2);
-        var rpx = value.first().token();
-        var rpy = value.length > 1 ? value.last().token() : null;
-        params.forEach(function(param) {
-          param.repeat = [
-            {
-              'string': rpx.content(),
-              'index': rpx.sIndex()
+        var index = 0;
+        var count = 0;
+        var value = leaves[i].leaf(2);
+        var param;
+        value.leaves().forEach(function(leaf) {
+          if(leaf.name() == CssNode.TOKEN) {
+            var token = leaf.token();
+            if(token.type() == Token.PROPERTY) {
+              if(count % 2 == 0) {
+                param = params[index++];
+                param.repeat = [];
+              }
+              count++;
+              param.repeat.push({
+                'string': token.content(),
+                'index': token.sIndex()
+              });
             }
-          ];
-          if(rpy) {
-            param.repeat[1] = {
-              'string': rpy.content(),
-              'index': rpy.sIndex()
-            };
           }
         });
         break;
@@ -180,21 +189,22 @@ function position(params, leaves) {
     if(style.name() == CssNode.STYLE) {
       var key = style.first();
       if(key.first().token().content().toLowerCase() == 'background-position') {
-        var first = true;
         var index = 0;
+        var count = 0;
         var value = leaves[i].leaf(2);
-        var param = params[0];
-        value.leaves().forEach(function(leaf, i) {
+        var param;
+        value.leaves().forEach(function(leaf) {
           if(leaf.name() == CssNode.TOKEN) {
             var token = leaf.token();
             var s = token.content().toLowerCase();
             if(token.type() == Token.NUMBER
               || POSITION.hasOwnProperty(s)) {
-              if(first) {
-                first = false;
+              if(count % 2 == 0) {
+                param = params[index++];
                 param.position = [];
                 param.units = [];
               }
+              count++;
               param.position.push({
                 'string': token.content(),
                 'index': token.sIndex()
@@ -206,8 +216,8 @@ function position(params, leaves) {
                   'index': token.sIndex()
                 });
               }
-              if(i % 2 == 1) {
-                index++;
+              else {
+                param.units.push(null);
               }
             }
           }

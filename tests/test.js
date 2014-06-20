@@ -39,10 +39,12 @@ describe('bgis test', function() {
   });
   it('multi background url', function() {
     var param = [{
-      'string': 'p{background:url(x), url(y)}'
+      'string': 'p{background:url(x), url("y")}'
     }];
     var res = Sprites.parse(param)[0].bgis;
     expect(res.length).to.eql(2);
+    expect(res[0].url.string).to.eql('x');
+    expect(res[1].url.string).to.eql('"y"');
   });
   it('background with 1 repeat', function() {
     var param = [{
@@ -70,7 +72,7 @@ describe('bgis test', function() {
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(1);
-    expect(res.units.length).to.eql(0);
+    expect(res.units.length).to.eql(1);
   });
   it('background with 2 position', function() {
     var param = [{
@@ -79,7 +81,7 @@ describe('bgis test', function() {
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.repeat.length).to.eql(0);
     expect(res.position.length).to.eql(2);
-    expect(res.units.length).to.eql(0);
+    expect(res.units.length).to.eql(2);
   });
   it('background with 1 units', function() {
     var param = [{
@@ -90,9 +92,9 @@ describe('bgis test', function() {
     expect(res.position.length).to.eql(1);
     expect(res.units.length).to.eql(1);
   });
-  it('background with 2 units', function() {
+  it('background with 1 units but 2 position', function() {
     var param = [{
-      'string': 'p{background:url(x) 0px 0px}'
+      'string': 'p{background:url(x) 0px 0}'
     }];
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.repeat.length).to.eql(0);
@@ -162,12 +164,19 @@ describe('bgis test', function() {
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.position.length).to.eql(2);
   });
-  it('background-position units', function() {
+  it('background-position units should equal position', function() {
     var param = [{
       'string': 'p{background:url(x);background-position:0px}'
     }];
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.units.length).to.eql(1);
+  });
+  it('background-position units default is null(%)', function() {
+    var param = [{
+      'string': 'p{background:url(x);background-position:0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.units[0]).to.eql(null);
   });
   it('background-position units should overwrite background when after it', function() {
     var param = [{
@@ -181,6 +190,18 @@ describe('bgis test', function() {
       'string': 'p{background-position:0px;background:url(x) 0 0}'
     }];
     var res = Sprites.parse(param)[0].bgis[0];
-    expect(res.units.length).to.eql(0);
+    expect(res.units.length).to.eql(2);
+  });
+  it('mult url with repeat,position,units', function() {
+    var param = [{
+      'string': 'p{background:url(x), url(y);background-repeat:repeat-x no-repeat no-repeat repeat-y;background-position:0 1px 2% 0}'
+    }];
+    var res = Sprites.parse(param)[0].bgis;
+    expect(res[0].repeat.length).to.eql(2);
+    expect(res[1].repeat.length).to.eql(2);
+    expect(res[0].position.length).to.eql(2);
+    expect(res[1].position.length).to.eql(2);
+    expect(res[0].units.length).to.eql(2);
+    expect(res[1].units.length).to.eql(2);
   });
 });
