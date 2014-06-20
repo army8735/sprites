@@ -32,12 +32,7 @@ export function bgis(css) {
 
 function recursion(node, res = []) {
   var isToken = node.name() == CssNode.TOKEN;
-  var isVirtual = isToken && node.token().type() == Token.VIRTUAL;
-  if(isToken) {
-    if(!isVirtual) {
-    }
-  }
-  else {
+  if(!isToken) {
     node.leaves().forEach(function(leaf) {
       recursion(leaf, res);
     });
@@ -81,6 +76,13 @@ function parse(style, key, value) {
       break;
     }
   }
+  var params = bgi(key, value);
+  repeat(params, leaves);
+  position(params, leaves);
+  media(params, block);
+  return params;
+}
+function bgi(key, value) {
   var params = [];
   //仅background可能写repeat和position，background-image没有
   var hasP = key.first().token().content().toLowerCase() == 'background';
@@ -88,9 +90,9 @@ function parse(style, key, value) {
     if(leaf.name() == CssNode.URL) {
       var url = leaf.leaf(2).token();
       var param = { url: {
-          'string': url.content(),
-          'index': url.sIndex()
-        }, repeat: [], pos: [], units: [] };
+        'string': url.content(),
+        'index': url.sIndex()
+      }, repeat: [], pos: [], units: [] };
       if(hasP) {
         var next = leaf;
         while((next = next.next())
@@ -136,10 +138,13 @@ function parse(style, key, value) {
       params.push(param);
     }
   });
+  return params;
+}
+function repeat(params, leaves) {
   //后面的background-repeat会覆盖掉前面的所有url
-  for(i = leaves.length - 1; i > -1; i--) {
+  for(var i = leaves.length - 1; i > -1; i--) {
     if(leaves[i].name().toLowerCase() == 'background-repeat') {
-      value = leaves[i].leaf(2);
+      var value = leaves[i].leaf(2);
       var rpx = value.first().token();
       var rpy = value.last().token();
       params.forEach(function(param) {
@@ -154,10 +159,12 @@ function parse(style, key, value) {
       break;
     }
   }
+}
+function position(params, leaves) {
   //后面的background-position会覆盖掉前面的相应索引的url
-  for(i = leaves.length - 1; i > -1; i--) {
+  for(var i = leaves.length - 1; i > -1; i--) {
     if(leaves[i].name().toLowerCase() == 'background-position') {
-      value = leaves[i].leaf(2);
+      var value = leaves[i].leaf(2);
       var index = 0;
       var index2 = 0;
       var param = params[index];
@@ -183,20 +190,7 @@ function parse(style, key, value) {
       break;
     }
   }
-  //整体过滤掉position不是数字的
-//  for(i = params.length; i > -1; i--) {
-//    var param = params[i];
-//    if(param.pos.length) {
-//      var notNum = false;
-//      param.pos.forEach(function(pos) {
-//        if(POSITION.hasOwnProperty(pos.string.toLowerCase())) {
-//          notNum = true;
-//        }
-//      });
-//      if(notNum) {
-//        params.splice(i, 1);
-//      }
-//    }
-//  }
-  return params;
+}
+function media(params, block) {
+  //
 }
