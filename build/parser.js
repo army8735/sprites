@@ -76,25 +76,26 @@ function parse(style, key, value) {
   for(i = copy.length - 1; i > -1; i--) {
     var leaf = copy[i];
     if(leaf.name() == CssNode.STYLE
-      && HASH.hasOwnProperty(leaf.first().token().content().toLowerCase())) {
+      && HASH.hasOwnProperty(leaf.first().first().token().content().toLowerCase())) {
       style = leaf;
       key = style.first();
       value = style.leaf(2);
-      leaves = leaves.slice(i);
+      copy = copy.slice(i + 1);
       break;
     }
   }
   history[style.nid()] = true;
-  var params = bgi(key, value);
-  repeat(params, leaves);
-  position(params, leaves);
-  media(params, style);
+  var hasP = key.first().token().content().toLowerCase() == 'background';
+  var params = bgi(key, value, hasP);
+  //background会覆盖掉前面的设置，background-image则不会，据此传入整个节点或后面兄弟节点
+  repeat(params, hasP ? copy : leaves);
+  position(params, hasP ? copy : leaves);
+  media(params, block);
   return params;
 }
-function bgi(key, value) {
+function bgi(key, value, hasP) {
   var params = [];
   //仅background可能写repeat和position，background-image没有
-  var hasP = key.first().token().content().toLowerCase() == 'background';
   value.leaves().forEach(function(leaf) {
     if(leaf.name() == CssNode.URL) {
       var url = leaf.leaf(2).token();
@@ -146,51 +147,73 @@ function bgi(key, value) {
 function repeat(params, leaves) {
   //后面的background-repeat会覆盖掉前面的所有url
   for(var i = leaves.length - 1; i > -1; i--) {
-    if(leaves[i].name().toLowerCase() == 'background-repeat') {
-      var value = leaves[i].leaf(2);
-      var rpx = value.first().token();
-      var rpy = value.last().token();
-      params.forEach(function(param) {
-        param.repeat = [{
-          'string': rpx.content(),
-          'index': rpx.sIndex()
-        }, {
-          'string': rpy.content(),
-          'index': rpy.sIndex()
-        }];
-      });
-      break;
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'background-repeat') {
+        var value = style.leaf(2);
+        var rpx = value.first().token();
+        var rpy = value.length > 1 ? value.last().token() : null;
+        params.forEach(function(param) {
+          param.repeat = [
+            {
+              'string': rpx.content(),
+              'index': rpx.sIndex()
+            }
+          ];
+          if(rpy) {
+            param.repeat[1] = {
+              'string': rpy.content(),
+              'index': rpy.sIndex()
+            };
+          }
+        });
+        break;
+      }
     }
   }
 }
 function position(params, leaves) {
   //后面的background-position会覆盖掉前面的相应索引的url
   for(var i = leaves.length - 1; i > -1; i--) {
-    if(leaves[i].name().toLowerCase() == 'background-position') {
-      var value = leaves[i].leaf(2);
-      var index = 0;
-      var index2 = 0;
-      var param = params[index];
-      value.leaves().forEach(function(leaf) {
-        if(leaf.name() == CssNode.TOKEN) {
-          var token = leaf.first().token();
-          var s = token.content().toLowerCase();
-          if(token.type() == Token.NUMBER
-            || POSITION.hasOwnProperty(s)) {
-            param.repeat[index2] = {
-              'string': token.content(),
-              'index': token.sIndex()
-            };
-            index2++;
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'background-position') {
+        var first = true;
+        var index = 0;
+        var value = leaves[i].leaf(2);
+        var param = params[0];
+        value.leaves().forEach(function(leaf, i) {
+          if(leaf.name() == CssNode.TOKEN) {
+            var token = leaf.token();
+            var s = token.content().toLowerCase();
+            if(token.type() == Token.NUMBER
+              || POSITION.hasOwnProperty(s)) {
+              if(first) {
+                first = false;
+                param.position = [];
+                param.units = [];
+              }
+              param.position.push({
+                'string': token.content(),
+                'index': token.sIndex()
+              });
+              var next = leaf.next();
+              if(next && next.token().type() == Token.UNITS) {
+                param.units.push({
+                  'string': token.content(),
+                  'index': token.sIndex()
+                });
+              }
+              if(i % 2 == 1) {
+                index++;
+              }
+            }
           }
-          else if(token.type() == Token.SIGN &&
-            token.content() == ',') {
-            param = params[++index];
-            index2 = 0;
-          }
-        }
-      });
-      break;
+        });
+        break;
+      }
     }
   }
 }
