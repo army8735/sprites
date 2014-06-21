@@ -45,7 +45,7 @@ exports.bgis=bgis;function bgis(css) {
 }
 
 function recursion(node, res ) {
-  if(res===void 0)res = [ ];var isToken = node.name() == CssNode.TOKEN;
+  if(res===void 0)res=[];var isToken = node.name() == CssNode.TOKEN;
   if(!isToken) {
     node.leaves().forEach(function(leaf) {
       recursion(leaf, res);
@@ -412,6 +412,9 @@ function media(params, style) {
                 var val = join(value);
                 try {
                   val = parseInt(val);
+                  if(isNaN(val)) {
+                    val = 1;
+                  }
                   params.forEach(function(param) {
                     param.radio = val;
                   });

@@ -177,7 +177,7 @@ describe('bgis test', function() {
   });
   it('media error is 1x', function() {
     var param = [{
-      'string': '@media (min--moz-device-pixel-ratio: error){p{background:url(x)}}'
+      'string': '@media(min--moz-device-pixel-ratio:auto){p{background:url(x)}}'
     }];
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.radio).to.eql(1);

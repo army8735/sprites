@@ -412,6 +412,9 @@ function media(params, style) {
                 var val = join(value);
                 try {
                   val = parseInt(val);
+                  if(isNaN(val)) {
+                    val = 1;
+                  }
                   params.forEach(function(param) {
                     param.radio = val;
                   });

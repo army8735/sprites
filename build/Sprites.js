@@ -8,11 +8,11 @@ var parser=require('./parser');
 
 
   function Sprites(csses ) {
-    if(csses===void 0)csses = [ ];this.csses = Array.isArray(csses) ? csses : [csses];
+    if(csses===void 0)csses=[];this.csses = Array.isArray(csses) ? csses : [csses];
   }
 
   Sprites.prototype.parse = function(csses ) {
-    if(csses===void 0)csses = [ ];if(csses) {
+    if(csses===void 0)csses=[];if(csses) {
       this.csses = Array.isArray(csses) ? csses : [csses];
     }
     this.csses.forEach(function(css) {
@@ -28,7 +28,7 @@ var parser=require('./parser');
   }
 
   Sprites.config=function(data ) {
-    if(data===void 0)data = { };Object.keys(data).forEach(function(k) {
+    if(data===void 0)data={};Object.keys(data).forEach(function(k) {
       gConfig.k = data[k];
     });
   }
