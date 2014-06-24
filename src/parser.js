@@ -35,9 +35,11 @@ var DP_RADIO = {
 };
 
 var history;
+var radio;
 
 export function bgis(css) {
   history = {};
+  radio = 1;
   var cssParser = homunculus.getParser('css');
   var ast = cssParser.parse(css.string);
   var res = recursion(ast);
@@ -47,28 +49,33 @@ export function bgis(css) {
 function recursion(node, res = []) {
   var isToken = node.name() == CssNode.TOKEN;
   if(!isToken) {
+    switch(node.name()) {
+      case CssNode.URL:
+        var value = node.parent();
+        if(value.name() == CssNode.VALUE) {
+          var key = value.prev().prev();
+          var s = key.first().token().content().toLowerCase();
+          if(HASH.hasOwnProperty(s)) {
+            var style = key.parent();
+            //防止同一个background设置多个背景图重复
+            if(!history.hasOwnProperty(style.nid())) {
+              history[style.nid()] = true;
+              var params = parse(style, key, value);
+              params.forEach(function(param) {
+                var bgi = new BackgroundImage(param);
+                res.push(bgi);
+              });
+            }
+          }
+        }
+        break;
+      case CssNode.MEDIA:
+        media(node);
+        break;
+    }
     node.leaves().forEach(function(leaf) {
       recursion(leaf, res);
     });
-    if(node.name() == CssNode.URL) {
-      var value = node.parent();
-      if(value.name() == CssNode.VALUE) {
-        var key = value.prev().prev();
-        var s = key.first().token().content().toLowerCase();
-        if(HASH.hasOwnProperty(s)) {
-          var style = key.parent();
-          //防止同一个background设置多个背景图重复
-          if(!history.hasOwnProperty(style.nid())) {
-            history[style.nid()] = true;
-            var params = parse(style, key, value);
-            params.forEach(function(param) {
-              var bgi = new BackgroundImage(param);
-              res.push(bgi);
-            });
-          }
-        }
-      }
-    }
   }
   return res;
 }
@@ -100,7 +107,6 @@ function parse(style, key, value) {
   width(params, leaves);
   height(params, leaves);
   padding(params, leaves);
-  media(params, block);
   return params;
 }
 function bgi(key, value, hasP) {
@@ -110,9 +116,10 @@ function bgi(key, value, hasP) {
     if(leaf.name() == CssNode.URL) {
       var url = leaf.leaf(2).token();
       var param = { url: {
-        'string': url.content(),
-        'index': url.sIndex()
-      }, repeat: [],
+          'string': url.content(),
+          'index': url.sIndex()
+        }, radio: radio,
+        repeat: [],
         position: [],
         units: [], size:[],
         sunits: [],
@@ -391,45 +398,34 @@ function padding(params, leaves) {
     }
   }
 }
-function media(params, style) {
-  var parent = style.parent();
-  outer:
-  while(parent = parent.parent()) {
-    if(parent.name() == CssNode.MEDIA) {
-      var mql = parent.leaf(1);
-      var leaves = mql.leaves();
-      for(var i = 0; i < leaves.length; i++) {
-        var mq = leaves[i];
-        var leaves2 = mq.leaves();
-        for(var j = 0; j < leaves2.length; j++) {
-          var expression = leaves2[j];
-          if(expression.name() == CssNode.EXPR) {
-            var key = expression.leaf(1);
-            var value = expression.leaf(3);
-            if(key && key.name() == CssNode.KEY
-              && value && value.name() == CssNode.VALUE) {
-              if(DP_RADIO.hasOwnProperty(key.last().token().content().toLowerCase())) {
-                var val = join(value);
-                try {
-                  val = parseInt(val);
-                  if(isNaN(val)) {
-                    val = 1;
-                  }
-                  params.forEach(function(param) {
-                    param.radio = val;
-                  });
-                  return;
-                } catch(e) {
-                  break outer;
-                }
+function media(node) {
+  var mql = node.leaf(1);
+  var leaves = mql.leaves();
+  for(var i = 0; i < leaves.length; i++) {
+    var mq = leaves[i];
+    var leaves2 = mq.leaves();
+    for(var j = 0; j < leaves2.length; j++) {
+      var expression = leaves2[j];
+      if(expression.name() == CssNode.EXPR) {
+        var key = expression.leaf(1);
+        var value = expression.leaf(3);
+        if(key && key.name() == CssNode.KEY
+          && value && value.name() == CssNode.VALUE) {
+          if(DP_RADIO.hasOwnProperty(key.last().token().content().toLowerCase())) {
+            var val = join(value);
+            try {
+              val = parseInt(val);
+              if(isNaN(val)) {
+                val = 1;
               }
+              radio = val;
+              return;
+            } catch(e) {
+              radio = 1;
             }
           }
         }
       }
     }
   }
-  params.forEach(function(param) {
-    param.radio = 1;
-  });
 }
