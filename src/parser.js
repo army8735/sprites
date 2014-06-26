@@ -105,7 +105,9 @@ function parse(style, key, value) {
   position(params, hasP ? copy : leaves);
   size(params, leaves);
   width(params, leaves);
+  maxWidth(params, leaves);
   height(params, leaves);
+  maxHeight(params, leaves);
   padding(params, leaves);
   return params;
 }
@@ -330,6 +332,46 @@ function width(params, leaves) {
     }
   }
 }
+function maxWidth(params, leaves) {
+  //后面的maxWidth会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'max-width') {
+        var value = style.leaf(2);
+        var node = value.first();
+        var token = node.token();
+        var width = {
+          'string': token.content(),
+          'index': token.sIndex()
+        };
+        var units = null;
+        node = node.next();
+        if(node && node.token().type() == Token.UNITS) {
+          units = {
+            'string': node.token().content(),
+            'index': node.token().sIndex()
+          }
+        }
+        params.forEach(function(param) {
+          //不存在width但有maxWidth或者相同单位下width比maxWidth小的情况会被覆盖
+          if(params.width) {
+            if(params.wunits.string == units.string
+              && parseInt(params.width.string) > parseInt(width.string)) {
+              param.width = width;
+              param.wunits = units;
+            }
+          }
+          else {
+            param.width = width;
+            param.wunits = units;
+          }
+        });
+      }
+    }
+  }
+}
 function height(params, leaves) {
   //后面的width会覆盖掉前面的
   for(var i = leaves.length - 1; i > -1; i--) {
@@ -355,6 +397,46 @@ function height(params, leaves) {
         params.forEach(function(param) {
           param.height = height;
           param.hunits = units;
+        });
+      }
+    }
+  }
+}
+function maxHeight(params, leaves) {
+  //后面的width会覆盖掉前面的
+  for(var i = leaves.length - 1; i > -1; i--) {
+    var style = leaves[i];
+    if(style.name() == CssNode.STYLE) {
+      var key = style.first();
+      if(key.first().token().content().toLowerCase() == 'max-height') {
+        var value = style.leaf(2);
+        var node = value.first();
+        var token = node.token();
+        var height = {
+          'string': token.content(),
+          'index': token.sIndex()
+        };
+        var units = null;
+        node = node.next();
+        if(node && node.token().type() == Token.UNITS) {
+          units = {
+            'string': node.token().content(),
+            'index': node.token().sIndex()
+          }
+        }
+        params.forEach(function(param) {
+          //不存在height但有maxHeight或者相同单位下height比maxHeight小的情况会被覆盖
+          if(params.height) {
+            if(params.hunits.string == units.string
+              && parseInt(params.height.string) > parseInt(height.string)) {
+              param.height = height;
+              param.hunits = units;
+            }
+          }
+          else {
+            param.height = height;
+            param.hunits = units;
+          }
         });
       }
     }
