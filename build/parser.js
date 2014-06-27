@@ -4,6 +4,9 @@ var Token = homunculus.getClass('token');
 
 var BackgroundImage=require('./BackgroundImage');
 var join=require('./join');
+var media=require('./media');
+var prepare=require('./prepare');
+var property=require('./property');
 
 var HASH = {
   'background': true,
@@ -29,10 +32,6 @@ var SIZE = {
   'right': true,
   'contain': true
 };
-var DP_RADIO = {
-  'min-device-pixel-ratio': true,
-  'min--moz-device-pixel-ratio': true
-};
 
 var history;
 var radio;
@@ -42,6 +41,7 @@ exports.bgis=bgis;function bgis(css) {
   radio = 1;
   var cssParser = homunculus.getParser('css');
   var ast = cssParser.parse(css.string);
+  var pre = prepare(ast);
   var res = recursion(ast);
   return res;
 }
@@ -70,7 +70,7 @@ function recursion(node, res ) {
         }
         break;
       case CssNode.MEDIA:
-        media(node);
+        radio = media(node);
         break;
     }
     node.leaves().forEach(function(leaf) {
@@ -104,9 +104,34 @@ function parse(style, key, value) {
   repeat(params, hasP ? copy : leaves);
   position(params, hasP ? copy : leaves);
   size(params, leaves);
-  width(params, leaves);
-  height(params, leaves);
-  padding(params, leaves);
+  //其它属性值
+  var w = property.normal(leaves, 'width');
+  var h = property.normal(leaves, 'height');
+  var mw = property.normal(leaves, 'max-width');
+  var mh = property.normal(leaves, 'max-height');
+  var pd = property.padding(leaves, 'padding');
+  params.forEach(function(param) {
+    if(w) {
+      param.width = w.property;
+      param.wunits = w.units;
+    }
+    if(h) {
+      param.height = h.property;
+      param.hunits = h.units;
+    }
+    if(mw) {
+      param.mwidth = mw.property;
+      param.mwunits = mw.units;
+    }
+    if(mh) {
+      param.mheight = mh.property;
+      param.mhunits = mh.units;
+    }
+    if(pd) {
+      param.padding = pd.property;
+      param.punits = pd.units;
+    }
+  });
   return params;
 }
 function bgi(key, value, hasP) {
@@ -296,135 +321,6 @@ function size(params, leaves) {
           }
         });
         break;
-      }
-    }
-  }
-}
-function width(params, leaves) {
-  //后面的width会覆盖掉前面的
-  for(var i = leaves.length - 1; i > -1; i--) {
-    var style = leaves[i];
-    if(style.name() == CssNode.STYLE) {
-      var key = style.first();
-      if(key.first().token().content().toLowerCase() == 'width') {
-        var value = style.leaf(2);
-        var node = value.first();
-        var token = node.token();
-        var width = {
-          'string': token.content(),
-          'index': token.sIndex()
-        };
-        var units = null;
-        node = node.next();
-        if(node && node.token().type() == Token.UNITS) {
-          units = {
-            'string': node.token().content(),
-            'index': node.token().sIndex()
-          }
-        }
-        params.forEach(function(param) {
-          param.width = width;
-          param.wunits = units;
-        });
-      }
-    }
-  }
-}
-function height(params, leaves) {
-  //后面的width会覆盖掉前面的
-  for(var i = leaves.length - 1; i > -1; i--) {
-    var style = leaves[i];
-    if(style.name() == CssNode.STYLE) {
-      var key = style.first();
-      if(key.first().token().content().toLowerCase() == 'height') {
-        var value = style.leaf(2);
-        var node = value.first();
-        var token = node.token();
-        var height = {
-          'string': token.content(),
-          'index': token.sIndex()
-        };
-        var units = null;
-        node = node.next();
-        if(node && node.token().type() == Token.UNITS) {
-          units = {
-            'string': node.token().content(),
-            'index': node.token().sIndex()
-          }
-        }
-        params.forEach(function(param) {
-          param.height = height;
-          param.hunits = units;
-        });
-      }
-    }
-  }
-}
-function padding(params, leaves) {
-  //后面的width会覆盖掉前面的
-  for(var i = leaves.length - 1; i > -1; i--) {
-    var style = leaves[i];
-    if(style.name() == CssNode.STYLE) {
-      var key = style.first();
-      if(key.first().token().content().toLowerCase() == 'padding') {
-        var value = style.leaf(2);
-        var leaves2 = value.leaves();
-        var padding = [];
-        var units = [];
-        leaves2.forEach(function(leaf) {
-          if(leaf && leaf.token().type() == Token.NUMBER) {
-            var token = leaf.token();
-            padding.push({
-              'string': token.content(),
-              'index': token.sIndex()
-            });
-          }
-          leaf = leaf.next();
-          if(leaf && leaf.token().type() == Token.UNITS) {
-            units.push({
-              'string': leaf.token().content(),
-              'index': leaf.token().sIndex()
-            });
-          }
-          else {
-            units.push(null);
-          }
-        });
-        params.forEach(function(param) {
-          param.padding = padding;
-          param.punits = units;
-        });
-      }
-    }
-  }
-}
-function media(node) {
-  var mql = node.leaf(1);
-  var leaves = mql.leaves();
-  for(var i = 0; i < leaves.length; i++) {
-    var mq = leaves[i];
-    var leaves2 = mq.leaves();
-    for(var j = 0; j < leaves2.length; j++) {
-      var expression = leaves2[j];
-      if(expression.name() == CssNode.EXPR) {
-        var key = expression.leaf(1);
-        var value = expression.leaf(3);
-        if(key && key.name() == CssNode.KEY
-          && value && value.name() == CssNode.VALUE) {
-          if(DP_RADIO.hasOwnProperty(key.last().token().content().toLowerCase())) {
-            var val = join(value);
-            try {
-              val = parseInt(val);
-              if(isNaN(val)) {
-                val = 1;
-              }
-              radio = val;
-              return;
-            } catch(e) {
-              radio = 1;
-            }
-          }
-        }
       }
     }
   }
