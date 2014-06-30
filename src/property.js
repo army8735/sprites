@@ -87,3 +87,49 @@ export function padding(node, name) {
     }
   }
 }
+
+export function extend(pre, selector, name, current, radio) {
+  var key = [];
+  var last;
+  if(Array.isArray(selector)) {
+    key = selector;
+  }
+  else {
+    selector.leaves().forEach(function(node) {
+      var token = node.token();
+      var s = token.content();
+      //不相邻的两个选择器以空格链接
+      if(last && last.tid() < token.tid() - 1) {
+        key.push(' ');
+      }
+      last = token;
+      key.push(s);
+    });
+  }
+  pre = pre[radio];
+  //依次出栈选择器最后一个，全匹配父选择器
+  while(key.length > 1) {
+    key.pop();
+    var s = key.join('');
+    if(pre.hasOwnProperty(s)) {
+      var block = pre[s];
+      var value = normal(block, name);
+      if(!value) {
+        value = extend(pre, key, name, current, radio);
+      }
+      else if(value.units && value.units.string == '%') {
+        value = extend(pre, key, name, value, radio);
+      }
+      //计算本身和父类乘积
+      if(value && current && current.units) {
+        value.property.string = parseInt(value.property.string) * parseInt(current.property.string);
+        if(current.units.string == '%') {
+          value.property.string /= 100;
+        }
+        value.property.string = String(Math.floor(value.property.string));
+        value.units.string = 'px';
+      }
+      return value;
+    }
+  }
+}

@@ -33,21 +33,17 @@ var SIZE = {
   'contain': true
 };
 
-var history;
-var radio;
-
 exports.bgis=bgis;function bgis(css) {
-  history = {};
-  radio = 1;
+  var history = {};
   var cssParser = homunculus.getParser('css');
   var ast = cssParser.parse(css.string);
   var pre = prepare(ast);
-  var res = recursion(ast);
+  var res = recursion(ast, pre, history, 1, []);
   return res;
 }
 
-function recursion(node, res ) {
-  if(res===void 0)res = [ ];var isToken = node.name() == CssNode.TOKEN;
+function recursion(node, pre, history, radio, res) {
+  var isToken = node.name() == CssNode.TOKEN;
   if(!isToken) {
     switch(node.name()) {
       case CssNode.URL:
@@ -60,7 +56,7 @@ function recursion(node, res ) {
             //防止同一个background设置多个背景图重复
             if(!history.hasOwnProperty(style.nid())) {
               history[style.nid()] = true;
-              var params = parse(style, key, value);
+              var params = parse(style, key, value, pre, history, radio);
               params.forEach(function(param) {
                 var bgi = new BackgroundImage(param);
                 res.push(bgi);
@@ -74,13 +70,13 @@ function recursion(node, res ) {
         break;
     }
     node.leaves().forEach(function(leaf) {
-      recursion(leaf, res);
+      recursion(leaf, pre, history, radio, res);
     });
   }
   return res;
 }
 
-function parse(style, key, value) {
+function parse(style, key, value, pre, history, radio) {
   var block = style.parent();
   var leaves = block.leaves();
   var i = leaves.indexOf(style, 1);
@@ -98,8 +94,9 @@ function parse(style, key, value) {
     }
   }
   history[style.nid()] = true;
+  //是否background-position
   var hasP = key.first().token().content().toLowerCase() == 'background';
-  var params = bgi(key, value, hasP);
+  var params = bgi(value, hasP, radio);
   //background会覆盖掉前面的设置，background-image则不会，据此传入整个节点或后面兄弟节点
   repeat(params, hasP ? copy : leaves);
   position(params, hasP ? copy : leaves);
@@ -110,6 +107,18 @@ function parse(style, key, value) {
   var mw = property.normal(leaves, 'max-width');
   var mh = property.normal(leaves, 'max-height');
   var pd = property.padding(leaves, 'padding');
+  //如果w或h等为%或没有，自动计算父类继承下来的实际px尺寸，只限绝对继承和单选择器，且继承只限1级
+  //如：p a{width:100px} p a span{width:100%}将继承
+  //但：p a{width:100px} a span{width:100%}不被继承
+  //但：p a{width:100px} p a span,p span{width:100%}也不被继承，因为多选择器会出现多继承歧义，处理比较麻烦
+  var selectors = block.prev();
+  if(selectors.size() == 1) {
+    var selector = selectors.first();
+    if(!w || w.units && w.units.string == '%') {
+      w = property.extend(pre, selector, 'width', w, radio);
+    }
+  }
+  //赋值并返回
   params.forEach(function(param) {
     if(w) {
       param.width = w.property;
@@ -134,7 +143,7 @@ function parse(style, key, value) {
   });
   return params;
 }
-function bgi(key, value, hasP) {
+function bgi(value, hasP, radio) {
   var params = [];
   //仅background可能写repeat和position，background-image没有
   value.leaves().forEach(function(leaf) {

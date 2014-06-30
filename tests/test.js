@@ -333,9 +333,34 @@ describe('bgis test', function() {
   });
   it('no padding', function() {
     var param = [{
-      'string': 'p{background:url(x);}'
+      'string': 'p{background:url(x)}'
     }];
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.padding).to.eql(null);
+  });
+  it('no width extend from parent', function() {
+    var param = [{
+      'string': 'div{width:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.not.eql(null);
+    expect(res.width.string).to.eql(100);
+    expect(res.wunits.string).to.eql('px');
+  });
+  it('width% extend from parent', function() {
+    var param = [{
+      'string': 'div{width:100px}div p{width:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.not.eql(null);
+    expect(res.width.string).to.eql(50);
+    expect(res.wunits.string).to.eql('px');
+  });
+  it('width% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{width:100%}div p{width:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.eql(null);
   });
 });
