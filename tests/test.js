@@ -363,4 +363,38 @@ describe('bgis test', function() {
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.width).to.eql(null);
   });
+  it('width% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{width:100px}div p{width:50%}div p a{width:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.width).to.not.eql(null);
+    expect(res.width.string).to.eql(25);
+    expect(res.wunits.string).to.eql('px');
+  });
+  it('height% extend from parent', function() {
+    var param = [{
+      'string': 'div{height:100px}div p{height:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.not.eql(null);
+    expect(res.height.string).to.eql(50);
+    expect(res.hunits.string).to.eql('px');
+  });
+  it('height% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{height:100%}div p{height:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.eql(null);
+  });
+  it('height% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{height:100px}div p{height:50%}div p a{height:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.not.eql(null);
+    expect(res.height.string).to.eql(25);
+    expect(res.hunits.string).to.eql('px');
+  });
 });

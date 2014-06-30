@@ -106,13 +106,13 @@ export function extend(pre, selector, name, current, radio) {
       key.push(s);
     });
   }
-  pre = pre[radio];
+  var hash = pre[radio];
   //依次出栈选择器最后一个，全匹配父选择器
   while(key.length > 1) {
     key.pop();
     var s = key.join('');
-    if(pre.hasOwnProperty(s)) {
-      var block = pre[s];
+    if(hash.hasOwnProperty(s)) {
+      var block = hash[s];
       var value = normal(block, name);
       if(!value) {
         value = extend(pre, key, name, current, radio);

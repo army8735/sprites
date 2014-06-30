@@ -107,7 +107,7 @@ function parse(style, key, value, pre, history, radio) {
   var mw = property.normal(leaves, 'max-width');
   var mh = property.normal(leaves, 'max-height');
   var pd = property.padding(leaves, 'padding');
-  //如果w或h等为%或没有，自动计算父类继承下来的实际px尺寸，只限绝对继承和单选择器，且继承只限1级
+  //如果w或h等为%或没有，自动计算父类继承下来的实际px尺寸，只限绝对继承和单选择器
   //如：p a{width:100px} p a span{width:100%}将继承
   //但：p a{width:100px} a span{width:100%}不被继承
   //但：p a{width:100px} p a span,p span{width:100%}也不被继承，因为多选择器会出现多继承歧义，处理比较麻烦
@@ -116,6 +116,15 @@ function parse(style, key, value, pre, history, radio) {
     var selector = selectors.first();
     if(!w || w.units && w.units.string == '%') {
       w = property.extend(pre, selector, 'width', w, radio);
+    }
+    if(!h || h.units && h.units.string == '%') {
+      h = property.extend(pre, selector, 'height', h, radio);
+    }
+    if(!mw || mw.units && mw.units.string == '%') {
+      mw = property.extend(pre, selector, 'max-width', mw, radio);
+    }
+    if(!mh || mh.units && mh.units.string == '%') {
+      mh = property.extend(pre, selector, 'max-height', mh, radio);
     }
   }
   //赋值并返回
