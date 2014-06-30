@@ -107,6 +107,10 @@ function parse(style, key, value, pre, history, radio) {
   var mw = property.normal(leaves, 'max-width');
   var mh = property.normal(leaves, 'max-height');
   var pd = property.padding(leaves, 'padding');
+  var pdt = property.normal(leaves, 'padding-top');
+  var pdr = property.normal(leaves, 'padding-right');
+  var pdb = property.normal(leaves, 'padding-bottom');
+  var pdl = property.normal(leaves, 'padding-left');
   //如果w或h等为%或没有，自动计算父类继承下来的实际px尺寸，只限绝对继承和单选择器
   //如：p a{width:100px} p a span{width:100%}将继承
   //但：p a{width:100px} a span{width:100%}不被继承
@@ -125,6 +129,22 @@ function parse(style, key, value, pre, history, radio) {
     }
     if(!mh || mh.units && mh.units.string == '%') {
       mh = property.extend(pre, selector, 'max-height', mh, radio);
+    }
+    //padding空不继承，但%继承
+    if(pd && pd.units && pd.units.string == '%') {
+      pd = property.extend(pre, selector, 'padding', mh, radio);
+    }
+    if(pdt && pdt.units && pdt.units.string == '%') {
+      pdt = property.extend(pre, selector, 'padding-top', mh, radio);
+    }
+    if(pdr && pdr.units && pdr.units.string == '%') {
+      pdr = property.extend(pre, selector, 'padding-right', mh, radio);
+    }
+    if(pdb && pdb.units && pdb.units.string == '%') {
+      pdb = property.extend(pre, selector, 'padding-bottom', mh, radio);
+    }
+    if(pdl && pdl.units && pdl.units.string == '%') {
+      pdl = property.extend(pre, selector, 'padding-left', mh, radio);
     }
   }
   //赋值并返回
@@ -148,6 +168,22 @@ function parse(style, key, value, pre, history, radio) {
     if(pd) {
       param.padding = pd.property;
       param.punits = pd.units;
+    }
+    if(pdt) {
+      param.paddingtop = pdt.property;
+      param.ptunits = pdt.units;
+    }
+    if(pdr) {
+      param.paddingright = pdr.property;
+      param.prunits = pdr.units;
+    }
+    if(pdb) {
+      param.paddingbottom = pdb.property;
+      param.pbunits = pdb.units;
+    }
+    if(pdl) {
+      param.paddingleft = pdl.property;
+      param.plunits = pdl.units;
     }
   });
   return params;

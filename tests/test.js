@@ -372,6 +372,15 @@ describe('bgis test', function() {
     expect(res.width.string).to.eql(25);
     expect(res.wunits.string).to.eql('px');
   });
+  it('no height extend from parent', function() {
+    var param = [{
+      'string': 'div{height:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.height).to.not.eql(null);
+    expect(res.height.string).to.eql(100);
+    expect(res.hunits.string).to.eql('px');
+  });
   it('height% extend from parent', function() {
     var param = [{
       'string': 'div{height:100px}div p{height:50%;background:url(x)}'
@@ -396,5 +405,30 @@ describe('bgis test', function() {
     expect(res.height).to.not.eql(null);
     expect(res.height.string).to.eql(25);
     expect(res.hunits.string).to.eql('px');
+  });
+  it('no padding no extend', function() {
+    var param = [{
+      'string': 'div{padding:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding).to.eql(null);
+  });
+  it('padding% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding:100px}div p{padding:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding).to.not.eql(null);
+    expect(res.padding[0].string).to.eql(50);
+    expect(res.punits[0].string).to.eql('px');
+  });
+  it('multi padding% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding:100px}div p{padding:10px 50% 0;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.padding).to.not.eql(null);
+    expect(res.padding.string).to.eql([10, 50, 0]);
+    expect(res.hunits.string).to.eql(['px', 'px']);
   });
 });
