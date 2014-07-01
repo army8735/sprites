@@ -5,16 +5,19 @@ module fs from 'fs';
 
 module BackgroundImage from './BackgroundImage';
 module parser from './parser';
+module Puzzle from './Puzzle';
 
 class Sprites {
   constructor(csses = []) {
     this.csses = Array.isArray(csses) ? csses : [csses];
+    this.puzzle = new Puzzle();
   }
 
   parse(csses = []) {
     if(csses) {
       this.csses = Array.isArray(csses) ? csses : [csses];
     }
+    //解析每个css文件的图片属性，赋值bgis上
     this.csses.forEach(function(css) {
       if(!css.hasOwnProperty('string')) {
         if(!css.hasOwnProperty('path')) {
@@ -24,7 +27,8 @@ class Sprites {
       }
       css.bgis = parser.bgis(css);
     });
-    return this.csses;
+    //拼图
+    return this.puzzle.parse(this.csses);
   }
 
   static config(data = {}) {
