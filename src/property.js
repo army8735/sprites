@@ -2,13 +2,17 @@ module homunculus from 'homunculus';
 var CssNode = homunculus.getClass('node', 'css');
 var Token = homunculus.getClass('token');
 
-export function normal(node, name) {
+export function cal(node, name) {
   var leaves;
   if(Array.isArray(node)) {
     leaves = node;
   }
   else {
     leaves = node.leaves();
+  }
+  name = name.toLowerCase();
+  if(name == 'padding') {
+    return calPadding(leaves);
   }
   //后面的width会覆盖掉前面的
   for(var i = leaves.length - 1; i > -1; i--) {
@@ -41,14 +45,7 @@ export function normal(node, name) {
   }
 }
 
-export function padding(node, name) {
-  var leaves;
-  if(Array.isArray(node)) {
-    leaves = node;
-  }
-  else {
-    leaves = node.leaves();
-  }
+function calPadding(leaves) {
   //后面的padding会覆盖掉前面的
   for(var i = leaves.length - 1; i > -1; i--) {
     var style = leaves[i];
@@ -106,6 +103,10 @@ export function extend(pre, selector, name, current, radio) {
       key.push(s);
     });
   }
+  name = name.toLowerCase();
+  if(name == 'padding') {
+    return extendPadding(pre, selector, name, current, radio);
+  }
   var hash = pre[radio];
   //依次出栈选择器最后一个，全匹配父选择器
   while(key.length > 1) {
@@ -113,7 +114,7 @@ export function extend(pre, selector, name, current, radio) {
     var s = key.join('');
     if(hash.hasOwnProperty(s)) {
       var block = hash[s];
-      var value = normal(block, name);
+      var value = cal(block, name);
       if(!value) {
         value = extend(pre, key, name, current, radio);
       }
@@ -132,4 +133,8 @@ export function extend(pre, selector, name, current, radio) {
       return value;
     }
   }
+}
+
+function extendPadding(pre, selector, name, current, radio) {
+
 }

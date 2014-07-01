@@ -102,15 +102,15 @@ function parse(style, key, value, pre, history, radio) {
   position(params, hasP ? copy : leaves);
   size(params, leaves);
   //其它属性值
-  var w = property.normal(leaves, 'width');
-  var h = property.normal(leaves, 'height');
-  var mw = property.normal(leaves, 'max-width');
-  var mh = property.normal(leaves, 'max-height');
-  var pd = property.padding(leaves, 'padding');
-  var pdt = property.normal(leaves, 'padding-top');
-  var pdr = property.normal(leaves, 'padding-right');
-  var pdb = property.normal(leaves, 'padding-bottom');
-  var pdl = property.normal(leaves, 'padding-left');
+  var w = property.cal(leaves, 'width');
+  var h = property.cal(leaves, 'height');
+  var mw = property.cal(leaves, 'max-width');
+  var mh = property.cal(leaves, 'max-height');
+  var pd = property.cal(leaves, 'padding');
+  var pdt = property.cal(leaves, 'padding-top');
+  var pdr = property.cal(leaves, 'padding-right');
+  var pdb = property.cal(leaves, 'padding-bottom');
+  var pdl = property.cal(leaves, 'padding-left');
   //如果w或h等为%或没有，自动计算父类继承下来的实际px尺寸，只限绝对继承和单选择器
   //如：p a{width:100px} p a span{width:100%}将继承
   //但：p a{width:100px} a span{width:100%}不被继承
@@ -132,19 +132,19 @@ function parse(style, key, value, pre, history, radio) {
     }
     //padding空不继承，但%继承
     if(pd && pd.units && pd.units.string == '%') {
-      pd = property.extend(pre, selector, 'padding', mh, radio);
+      pd = property.extend(pre, selector, 'padding', pd, radio);
     }
     if(pdt && pdt.units && pdt.units.string == '%') {
-      pdt = property.extend(pre, selector, 'padding-top', mh, radio);
+      pdt = property.extend(pre, selector, 'padding-top', pdt, radio);
     }
     if(pdr && pdr.units && pdr.units.string == '%') {
-      pdr = property.extend(pre, selector, 'padding-right', mh, radio);
+      pdr = property.extend(pre, selector, 'padding-right', pdr, radio);
     }
     if(pdb && pdb.units && pdb.units.string == '%') {
-      pdb = property.extend(pre, selector, 'padding-bottom', mh, radio);
+      pdb = property.extend(pre, selector, 'padding-bottom', pdb, radio);
     }
     if(pdl && pdl.units && pdl.units.string == '%') {
-      pdl = property.extend(pre, selector, 'padding-left', mh, radio);
+      pdl = property.extend(pre, selector, 'padding-left', pdl, radio);
     }
   }
   //赋值并返回
