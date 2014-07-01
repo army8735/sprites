@@ -4,11 +4,12 @@ class Puzzle {
   }
 
   parse(csses = []) {
-    var res = [];
     csses.forEach(function(css) {
-      console.log(css)
+      css.bgis.forEach(function(bgi) {
+        console.log(bgi)
+      });
     });
-    return res;
+    return csses;
   }
 
   static parse(csses) {

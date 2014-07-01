@@ -4,11 +4,12 @@
   }
 
   Puzzle.prototype.parse = function(csses ) {
-    if(csses===void 0)csses = [ ];var res = [];
-    csses.forEach(function(css) {
-      console.log(css)
+    if(csses===void 0)csses = [ ];csses.forEach(function(css) {
+      css.bgis.forEach(function(bgi) {
+        console.log(bgi)
+      });
     });
-    return res;
+    return csses;
   }
 
   Puzzle.parse=function(csses) {
