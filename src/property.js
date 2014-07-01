@@ -63,16 +63,16 @@ function calPadding(leaves) {
               'string': token.content(),
               'index': token.sIndex()
             });
-          }
-          leaf = leaf.next();
-          if(leaf && leaf.token().type() == Token.UNITS) {
-            units.push({
-              'string': leaf.token().content(),
-              'index': leaf.token().sIndex()
-            });
-          }
-          else {
-            units.push(null);
+            leaf = leaf.next();
+            if(leaf && leaf.token().type() == Token.UNITS) {
+              units.push({
+                'string': leaf.token().content(),
+                'index': leaf.token().sIndex()
+              });
+            }
+            else {
+              units.push(null);
+            }
           }
         });
         return {
@@ -105,7 +105,7 @@ export function extend(pre, selector, name, current, radio) {
   }
   name = name.toLowerCase();
   if(name == 'padding') {
-    return extendPadding(pre, selector, name, current, radio);
+    return extendPadding(pre, key, name, current, radio);
   }
   var hash = pre[radio];
   //依次出栈选择器最后一个，全匹配父选择器
@@ -135,6 +135,42 @@ export function extend(pre, selector, name, current, radio) {
   }
 }
 
-function extendPadding(pre, selector, name, current, radio) {
-
+function extendPadding(pre, key, name, current, radio) {
+  var hash = pre[radio];
+  //依次出栈选择器最后一个，全匹配父选择器
+  while(key.length > 1) {
+    key.pop();
+    var s = key.join('');
+    if(hash.hasOwnProperty(s)) {
+      var block = hash[s];
+      var value = calPadding(block.leaves(), name);
+      if(!value) {
+        return;
+      }
+      else if(value.units && value.units.some(function(o){ return o && o.string == '%' })) {
+        value = extendPadding(pre, key, name, value, radio);
+      }
+      //计算本身和父类乘积
+      current.property.forEach(function(v, i) {
+        if(current.units[i]
+          && current.units[i].string == '%') {
+          var t = value.property[i];
+          //省略写法
+          if(!t) {
+            t = i == 3 ? value.property[1] : value.property[0];
+            t = t || value.property[0];
+          }
+          v.string = parseInt(v.string) * parseInt(t.string);
+          v.string /= 100;
+          v.string = String(Math.floor(v.string));
+          current.units[i].string = 'px';
+        }
+      });
+      //仍有%未处理返回空
+      if(current.units.some(function(o){ return o && o.string == '%' })) {
+        return;
+      }
+      return current;
+    }
+  }
 }

@@ -428,7 +428,135 @@ describe('bgis test', function() {
     }];
     var res = Sprites.parse(param)[0].bgis[0];
     expect(res.padding).to.not.eql(null);
-    expect(res.padding.string).to.eql([10, 50, 0]);
-    expect(res.hunits.string).to.eql(['px', 'px']);
+    expect(res.padding.map(function(o){ return o.string })).to.eql([10, 50, 0]);
+    expect(res.punits.map(function(o) { return o && o.string })).to.eql(['px', 'px', null]);
+  });
+  it('no padding-left no extend', function() {
+    var param = [{
+      'string': 'div{padding-left:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft).to.eql(null);
+  });
+  it('padding-left% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding-left:100px}div p{padding-left:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft).to.not.eql(null);
+    expect(res.paddingleft.string).to.eql(50);
+    expect(res.plunits.string).to.eql('px');
+  });
+  it('padding-left% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{padding-left:100%}div p{padding-left:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft).to.eql(null);
+  });
+  it('padding-left% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{padding-left:100px}div p{padding-left:50%}div p a{padding-left:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft).to.not.eql(null);
+    expect(res.paddingleft.string).to.eql(25);
+    expect(res.plunits.string).to.eql('px');
+  });
+  it('no padding-top no extend', function() {
+    var param = [{
+      'string': 'div{padding-top:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingtop).to.eql(null);
+  });
+  it('padding-top% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding-top:100px}div p{padding-top:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingtop).to.not.eql(null);
+    expect(res.paddingtop.string).to.eql(50);
+    expect(res.ptunits.string).to.eql('px');
+  });
+  it('padding-top% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{padding-top:100%}div p{padding-top:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingtop).to.eql(null);
+  });
+  it('padding-top% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{padding-top:100px}div p{padding-top:50%}div p a{padding-top:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingtop).to.not.eql(null);
+    expect(res.paddingtop.string).to.eql(25);
+    expect(res.ptunits.string).to.eql('px');
+  });
+  it('no padding-right no extend', function() {
+    var param = [{
+      'string': 'div{padding-right:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingright).to.eql(null);
+  });
+  it('padding-right% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding-right:100px}div p{padding-right:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingright).to.not.eql(null);
+    expect(res.paddingright.string).to.eql(50);
+    expect(res.prunits.string).to.eql('px');
+  });
+  it('padding-right% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{padding-right:100%}div p{padding-right:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingright).to.eql(null);
+  });
+  it('padding-right% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{padding-right:100px}div p{padding-right:50%}div p a{padding-right:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingright).to.not.eql(null);
+    expect(res.paddingright.string).to.eql(25);
+    expect(res.prunits.string).to.eql('px');
+  });
+  it('no padding-bottom no extend', function() {
+    var param = [{
+      'string': 'div{padding-bottom:100px}div p{background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingbottom).to.eql(null);
+  });
+  it('padding-bottom% extend from parent', function() {
+    var param = [{
+      'string': 'div{padding-bottom:100px}div p{padding-bottom:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingbottom).to.not.eql(null);
+    expect(res.paddingbottom.string).to.eql(50);
+    expect(res.pbunits.string).to.eql('px');
+  });
+  it('padding-bottom% extend from parent% is null', function() {
+    var param = [{
+      'string': 'div{padding-bottom:100%}div p{padding-bottom:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingbottom).to.eql(null);
+  });
+  it('padding-bottom% extend from parent% from parent', function() {
+    var param = [{
+      'string': 'div{padding-bottom:100px}div p{padding-bottom:50%}div p a{padding-bottom:50%;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingbottom).to.not.eql(null);
+    expect(res.paddingbottom.string).to.eql(25);
+    expect(res.pbunits.string).to.eql('px');
   });
 });

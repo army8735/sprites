@@ -131,7 +131,7 @@ function parse(style, key, value, pre, history, radio) {
       mh = property.extend(pre, selector, 'max-height', mh, radio);
     }
     //padding空不继承，但%继承
-    if(pd && pd.units && pd.units.string == '%') {
+    if(pd && pd.units && pd.units.some(function(o){ return o && o.string == '%' })) {
       pd = property.extend(pre, selector, 'padding', pd, radio);
     }
     if(pdt && pdt.units && pdt.units.string == '%') {
@@ -207,7 +207,11 @@ function bgi(value, hasP, radio) {
         wunits: null,
         hunits: null,
         padding: null,
-        punits: null
+        punits: null,
+        paddingleft: null,
+        paddingtop: null,
+        paddingright: null,
+        paddingbottom: null
       };
       if(hasP) {
         var next = leaf;

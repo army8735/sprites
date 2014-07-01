@@ -72,6 +72,30 @@ class BackgroundImage {
   get punits() {
     return this.params.punits;
   }
+  get paddingleft() {
+    return this.params.paddingleft;
+  }
+  get plunits() {
+    return this.params.plunits;
+  }
+  get paddingtop() {
+    return this.params.paddingtop;
+  }
+  get ptunits() {
+    return this.params.ptunits;
+  }
+  get paddingright() {
+    return this.params.paddingright;
+  }
+  get prunits() {
+    return this.params.prunits;
+  }
+  get paddingbottom() {
+    return this.params.paddingbottom;
+  }
+  get pbunits() {
+    return this.params.pbunits;
+  }
 }
 
 export default BackgroundImage;

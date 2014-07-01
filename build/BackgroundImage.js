@@ -72,6 +72,30 @@
   Object.defineProperty(BackgroundImage.prototype, "punits", {get :function() {
     return this.params.punits;
   }});
+  Object.defineProperty(BackgroundImage.prototype, "paddingleft", {get :function() {
+    return this.params.paddingleft;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "plunits", {get :function() {
+    return this.params.plunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "paddingtop", {get :function() {
+    return this.params.paddingtop;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "ptunits", {get :function() {
+    return this.params.ptunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "paddingright", {get :function() {
+    return this.params.paddingright;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "prunits", {get :function() {
+    return this.params.prunits;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "paddingbottom", {get :function() {
+    return this.params.paddingbottom;
+  }});
+  Object.defineProperty(BackgroundImage.prototype, "pbunits", {get :function() {
+    return this.params.pbunits;
+  }});
 
 
 module.exports=BackgroundImage;
