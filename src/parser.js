@@ -185,6 +185,47 @@ function parse(style, key, value, pre, history, radio) {
       param.paddingleft = pdl.property;
       param.plunits = pdl.units;
     }
+    //padding和padding-left等都有时确定优先级关系
+    if(param.padding) {
+      for(var i = 0; i < 4; i++) {
+        var o = param.padding[i];
+        o = o || (i == 3 ? param.padding[1] : param.padding[0]);
+        o = o || param.padding[0];
+        var u = param.punits[i];
+        if(u === void 0) {
+          u = i == 3 ? param.punits[1] : param.punits[0];
+        }
+        if(u === void 0) {
+          u = param.punits[0];
+        }
+        switch(i) {
+          case 3:
+            if(!param.paddingleft || o.index > param.paddingleft.index) {
+              param.paddingleft = { 'string': o.string, 'index': o.index };
+              param.plunits && u && (param.plunits.string = u.string);
+            }
+            break;
+          case 2:
+            if(!param.paddingbottom || o.index > param.paddingbottom.index) {
+              param.paddingbottom = { 'string': o.string, 'index': o.index };
+              param.pbunits && u && (param.pbunits.string = u.string);
+            }
+            break;
+          case 1:
+            if(!param.paddingright || o.index > param.paddingright.index) {
+              param.paddingright = { 'string': o.string, 'index': o.index };
+              param.prunits && u && (param.prunits.string = u.string);
+            }
+            break;
+          case 0:
+            if(!param.paddingtop || o.index > param.paddingtop.index) {
+              param.paddingtop = { 'string': o.string, 'index': o.index };
+              param.ptunits && u && (param.ptunits.string = u.string);
+            }
+            break;
+        }
+      }
+    }
   });
   return params;
 }

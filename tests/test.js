@@ -559,4 +559,24 @@ describe('bgis test', function() {
     expect(res.paddingbottom.string).to.eql(25);
     expect(res.pbunits.string).to.eql('px');
   });
+  it('padding before padding-left like should deal priority', function() {
+    var param = [{
+      'string': 'p{padding:0;padding-left:50px;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft.string).to.eql(50);
+    expect(res.paddingtop.string).to.eql(0);
+    expect(res.paddingright.string).to.eql(0);
+    expect(res.paddingbottom.string).to.eql(0);
+  });
+  it('padding after padding-top like should deal priority', function() {
+    var param = [{
+      'string': 'p{padding-top:50px;padding:0;background:url(x)}'
+    }];
+    var res = Sprites.parse(param)[0].bgis[0];
+    expect(res.paddingleft.string).to.eql(0);
+    expect(res.paddingtop.string).to.eql(0);
+    expect(res.paddingright.string).to.eql(0);
+    expect(res.paddingbottom.string).to.eql(0);
+  });
 });
