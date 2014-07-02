@@ -1,5 +1,4 @@
 var gConfig = {};
-var single;
 
 var fs=require('fs');
 
@@ -37,10 +36,7 @@ var Puzzle=require('./Puzzle');
     });
   }
   Sprites.parse=function(csses) {
-    if(!single) {
-      single = new Sprites();
-    }
-    return single.parse(csses);
+    return new Sprites().parse(csses);
   }
 
 

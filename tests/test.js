@@ -1,9 +1,11 @@
 var expect = require('expect.js');
 var fs = require('fs');
+var path = require('path');
 
 var Sprites = require('../index');
 var parser = require('../build/parser');
 var Puzzle = require('../build/Puzzle');
+var BackgroundImage = require('../build/BackgroundImage');
 
 describe('bgis test', function() {
   it('one background return one res', function() {
@@ -578,5 +580,26 @@ describe('puzzle test', function() {
     var param = [];
     var res = Puzzle.parse(param);
     expect(res).to.eql([]);
+  });
+  it('crop from a big image', function() {
+    var bgi = new BackgroundImage({
+      'url': 'a.gif',
+      'radio': 1,
+      'paddingtop': 0,
+      'paddingright': 0,
+      'paddingbottom': 0,
+      'paddingleft': 0,
+      'width': 16,
+      'height': 16,
+      'wunits': 'px',
+      'hunits': 'px'
+    });
+    var param = [{
+      'string': 'p{background:(a.gif)}',
+      'index': 14,
+      'path': path.join(__dirname, 'img'),
+      'bgis': [bgi]
+    }];
+    var res = Puzzle.parse(param);
   });
 });

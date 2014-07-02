@@ -28,7 +28,10 @@
   "author": "army8735",
   "license": "MIT",
   "dependencies": {
-    "homunculus": "^0.3.6"
+    "gif.js": "^0.1.6",
+    "homunculus": "^0.3.6",
+    "jpeg-js": "0.0.3",
+    "png-crop": "0.0.0"
   },
   "main": "./index",
   "engines": {

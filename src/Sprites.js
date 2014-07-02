@@ -1,5 +1,4 @@
 var gConfig = {};
-var single;
 
 module fs from 'fs';
 
@@ -37,10 +36,7 @@ class Sprites {
     });
   }
   static parse(csses) {
-    if(!single) {
-      single = new Sprites();
-    }
-    return single.parse(csses);
+    return new Sprites().parse(csses);
   }
 }
 
