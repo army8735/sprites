@@ -1,8 +1,8 @@
 module homunculus from 'homunculus';
 var CssNode = homunculus.getClass('Node', 'css');
-var Token = homunculus.getClass('Token');
+var Token = homunculus.getClass('Token', 'css');
 
-module media from './media';
+import media from './media';
 
 export default function(node) {
   var res = recursion(node, { '1': {} }, 1);
@@ -10,11 +10,11 @@ export default function(node) {
 };
 
 function recursion(node, res, radio) {
-  var isToken = node.name() == CssNode.TOKEN;
-  var isVirtual = isToken && node.token().type() == Token.VIRTUAL;
+  var isToken = node.isToken();
   if(isToken) {
+    var token = node.token();
+    var isVirtual = token.isVirtual();
     if(!isVirtual) {
-      var token = node.token();
     }
   }
   else {

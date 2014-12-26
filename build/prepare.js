@@ -1,20 +1,20 @@
 var homunculus=require('homunculus');
 var CssNode = homunculus.getClass('Node', 'css');
-var Token = homunculus.getClass('Token');
+var Token = homunculus.getClass('Token', 'css');
 
-var media=require('./media');
+var media=function(){var _0=require('./media');return _0.hasOwnProperty("media")?_0.media:_0.hasOwnProperty("default")?_0.default:_0}();
 
-module.exports=function(node) {
+exports.default=function(node) {
   var res = recursion(node, { '1': {} }, 1);
   return res;
 };
 
 function recursion(node, res, radio) {
-  var isToken = node.name() == CssNode.TOKEN;
-  var isVirtual = isToken && node.token().type() == Token.VIRTUAL;
+  var isToken = node.isToken();
   if(isToken) {
+    var token = node.token();
+    var isVirtual = token.isVirtual();
     if(!isVirtual) {
-      var token = node.token();
     }
   }
   else {

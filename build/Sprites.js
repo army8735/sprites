@@ -7,13 +7,13 @@ var parser=require('./parser');
 var Puzzle=require('./Puzzle');
 
 
-  function Sprites(csses ) {
-    if(csses===void 0)csses = [ ];this.csses = Array.isArray(csses) ? csses : [csses];
+  function Sprites(csses) {
+    if(csses===void 0)csses=[];this.csses = Array.isArray(csses) ? csses : [csses];
     this.puzzle = new Puzzle();
   }
 
-  Sprites.prototype.parse = function(csses ) {
-    if(csses===void 0)csses = [ ];if(csses) {
+  Sprites.prototype.parse = function(csses) {
+    if(csses===void 0)csses=[];if(csses) {
       this.csses = Array.isArray(csses) ? csses : [csses];
     }
     //解析每个css文件的图片属性，赋值bgis上
@@ -30,8 +30,8 @@ var Puzzle=require('./Puzzle');
     return this.puzzle.parse(this.csses);
   }
 
-  Sprites.config=function(data ) {
-    if(data===void 0)data = { };Object.keys(data).forEach(function(k) {
+  Sprites.config=function(data) {
+    if(data===void 0)data={};Object.keys(data).forEach(function(k) {
       gConfig.k = data[k];
     });
   }
@@ -40,4 +40,4 @@ var Puzzle=require('./Puzzle');
   }
 
 
-module.exports=Sprites;
+exports.default=Sprites;

@@ -4,8 +4,8 @@ var path = require('path');
 
 var Sprites = require('../index');
 var parser = require('../build/parser');
-var Puzzle = require('../build/Puzzle');
-var BackgroundImage = require('../build/BackgroundImage');
+var Puzzle = require('../build/Puzzle').default;
+var BackgroundImage = require('../build/BackgroundImage').default;
 
 describe('bgis test', function() {
   it('one background return one res', function() {

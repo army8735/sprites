@@ -1,11 +1,11 @@
 module homunculus from 'homunculus';
 var CssNode = homunculus.getClass('node', 'css');
-var Token = homunculus.getClass('token');
+var Token = homunculus.getClass('token', 'css');
 
-module BackgroundImage from './BackgroundImage';
-module join from './join';
-module media from './media';
-module prepare from './prepare';
+import BackgroundImage from './BackgroundImage';
+import join from './join';
+import media from './media';
+import prepare from './prepare';
 module property from './property';
 
 var HASH = {

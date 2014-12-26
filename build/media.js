@@ -1,15 +1,15 @@
 var homunculus=require('homunculus');
 var CssNode = homunculus.getClass('Node', 'css');
-var Token = homunculus.getClass('Token');
+var Token = homunculus.getClass('Token', 'css');
 
-var join=require('./join');
+var join=function(){var _0=require('./join');return _0.hasOwnProperty("join")?_0.join:_0.hasOwnProperty("default")?_0.default:_0}();
 
 var DP_RADIO = {
   'min-device-pixel-ratio': true,
   'min--moz-device-pixel-ratio': true
 };
 
-module.exports=function media(node) {
+exports.default=function media(node) {
   var mql = node.leaf(1);
   var leaves = mql.leaves();
   for(var i = 0; i < leaves.length; i++) {

@@ -1,11 +1,11 @@
 var homunculus=require('homunculus');
 var CssNode = homunculus.getClass('node', 'css');
-var Token = homunculus.getClass('token');
+var Token = homunculus.getClass('token', 'css');
 
-var BackgroundImage=require('./BackgroundImage');
-var join=require('./join');
-var media=require('./media');
-var prepare=require('./prepare');
+var BackgroundImage=function(){var _0=require('./BackgroundImage');return _0.hasOwnProperty("BackgroundImage")?_0.BackgroundImage:_0.hasOwnProperty("default")?_0.default:_0}();
+var join=function(){var _1=require('./join');return _1.hasOwnProperty("join")?_1.join:_1.hasOwnProperty("default")?_1.default:_1}();
+var media=function(){var _2=require('./media');return _2.hasOwnProperty("media")?_2.media:_2.hasOwnProperty("default")?_2.default:_2}();
+var prepare=function(){var _3=require('./prepare');return _3.hasOwnProperty("prepare")?_3.prepare:_3.hasOwnProperty("default")?_3.default:_3}();
 var property=require('./property');
 
 var HASH = {

@@ -7,8 +7,8 @@ var Buffer=require('buffer');
     this.history = {};
   }
 
-  Puzzle.prototype.parse = function(csses ) {
-    if(csses===void 0)csses = [ ];csses.forEach(function(css) {
+  Puzzle.prototype.parse = function(csses) {
+    if(csses===void 0)csses=[];csses.forEach(function(css) {
       css.res = css.string;
       //从尾部开始不影响字符串拼接
       css.bgis.reverse().forEach(function(bgi) {
@@ -37,4 +37,4 @@ var Buffer=require('buffer');
   }
 
 
-module.exports=Puzzle;
+exports.default=Puzzle;

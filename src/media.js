@@ -1,8 +1,8 @@
 module homunculus from 'homunculus';
 var CssNode = homunculus.getClass('Node', 'css');
-var Token = homunculus.getClass('Token');
+var Token = homunculus.getClass('Token', 'css');
 
-module join from './join';
+import join from './join';
 
 var DP_RADIO = {
   'min-device-pixel-ratio': true,

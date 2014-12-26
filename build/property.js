@@ -1,6 +1,6 @@
 var homunculus=require('homunculus');
 var CssNode = homunculus.getClass('node', 'css');
-var Token = homunculus.getClass('token');
+var Token = homunculus.getClass('token', 'css');
 
 exports.cal=cal;function cal(node, name) {
   var leaves;

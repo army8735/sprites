@@ -98,4 +98,4 @@
   }});
 
 
-module.exports=BackgroundImage;
+exports.default=BackgroundImage;

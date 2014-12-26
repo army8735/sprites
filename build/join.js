@@ -1,18 +1,18 @@
 var homunculus=require('homunculus');
 var CssNode = homunculus.getClass('Node', 'css');
-var Token = homunculus.getClass('Token');
+var Token = homunculus.getClass('Token', 'css');
 
-module.exports=function(node, word) {
+exports.default=function(node, word) {
   var res = recursion(node, { 's': '', 'word': word });
   return res.s;
 };
 
 function recursion(node, res) {
-  var isToken = node.name() == CssNode.TOKEN;
-  var isVirtual = isToken && node.token().type() == Token.VIRTUAL;
+  var isToken = node.isToken();
   if(isToken) {
+    var token = node.token();
+    var isVirtual = token.isVirtual();
     if(!isVirtual) {
-      var token = node.token();
       res.s += token.content();
     }
   }

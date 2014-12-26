@@ -4,16 +4,7 @@ var util = require('gulp-util');
 var through2 = require('through2');
 var jsdc = require('jsdc');
 
-var fs = require('fs');
 var path = require('path');
-
-function mkdir(dir) {
-  if(!fs.existsSync(dir)) {
-    var parent = path.dirname(dir);
-    mkdir(parent);
-    fs.mkdirSync(dir);
-  }
-}
 
 gulp.task('clean-bulid', function() {
   return gulp.src('./build/*')
@@ -22,30 +13,26 @@ gulp.task('clean-bulid', function() {
 
 function cb(file, enc, cb) {
   var target = file.path.replace(path.sep + 'src' + path.sep,  path.sep + 'build' + path.sep);
-  mkdir(path.dirname(target));
   util.log(path.relative(file.cwd, file.path), '->', path.relative(file.cwd, target));
-  var content = file._contents;
-  content = content.toString('utf-8');
+  var content = file.contents.toString('utf-8');
+  jsdc.reset();
   content = jsdc.parse(content);
-  fs.writeFileSync(target, content, { encoding: 'utf-8' });
+  file.contents = new Buffer(content);
   cb(null, file);
 }
 
 gulp.task('default', ['clean-bulid'], function() {
   gulp.src('./src/**/*.js')
-    .pipe(function() {
-      return through2.obj(cb);
-    }());
+    .pipe(through2.obj(cb))
+    .pipe(gulp.dest('./build/'));
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./src/**/*.js', function() {
-    var args = Array.prototype.slice.call(arguments);
-    args.forEach(function(arg) {
-      gulp.src(arg.path)
-        .pipe(function() {
-          return through2.obj(cb);
-        }());
-    });
+  gulp.watch('./src/**/*.js', function(file) {
+    var to = file.path.replace(path.sep + 'src' + path.sep,  path.sep + 'build' + path.sep);
+    to = path.dirname(to);
+    gulp.src(file.path)
+      .pipe(through2.obj(cb))
+      .pipe(gulp.dest(to));
   });
 });
