@@ -43,7 +43,7 @@ exports.bgis=bgis;function bgis(css) {
 }
 
 function recursion(node, pre, history, radio, res) {
-  var isToken = node.name() == CssNode.TOKEN;
+  var isToken = node.isToken();
   if(!isToken) {
     switch(node.name()) {
       case CssNode.URL:
@@ -58,8 +58,8 @@ function recursion(node, pre, history, radio, res) {
               history[style.nid()] = true;
               var params = parse(style, key, value, pre, history, radio);
               params.forEach(function(param) {
-                var bgi = new BackgroundImage(param);
-                res.push(bgi);
+                var backgroundImage = new BackgroundImage(param);
+                res.push(backgroundImage);
               });
             }
           }

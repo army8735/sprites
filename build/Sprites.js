@@ -2,9 +2,9 @@ var gConfig = {};
 
 var fs=require('fs');
 
-var BackgroundImage=require('./BackgroundImage');
+var BackgroundImage=function(){var _0=require('./BackgroundImage');return _0.hasOwnProperty("BackgroundImage")?_0.BackgroundImage:_0.hasOwnProperty("default")?_0.default:_0}();
 var parser=require('./parser');
-var Puzzle=require('./Puzzle');
+var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzle")?_1.Puzzle:_1.hasOwnProperty("default")?_1.default:_1}();
 
 
   function Sprites(csses) {
@@ -32,7 +32,7 @@ var Puzzle=require('./Puzzle');
 
   Sprites.config=function(data) {
     if(data===void 0)data={};Object.keys(data).forEach(function(k) {
-      gConfig.k = data[k];
+      gConfig[k] = data[k];
     });
   }
   Sprites.parse=function(csses) {

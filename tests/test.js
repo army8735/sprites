@@ -581,9 +581,12 @@ describe('puzzle test', function() {
     var res = Puzzle.parse(param);
     expect(res).to.eql([]);
   });
-  it('crop from a big image', function() {
+  it('ignore only one background', function() {
     var bgi = new BackgroundImage({
-      'url': 'a.gif',
+      'url': {
+        'string': '000.png',
+        'index': 14
+      },
       'radio': 1,
       'paddingtop': 0,
       'paddingright': 0,
@@ -595,11 +598,11 @@ describe('puzzle test', function() {
       'hunits': 'px'
     });
     var param = [{
-      'string': 'p{background:(a.gif)}',
-      'index': 14,
+      'string': 'p{background:(000.png)}',
       'path': path.join(__dirname, 'img'),
       'bgis': [bgi]
     }];
     var res = Puzzle.parse(param);
+    expect(res[0].res.string).to.eql(param[0].string);
   });
 });

@@ -2,9 +2,9 @@ var gConfig = {};
 
 module fs from 'fs';
 
-module BackgroundImage from './BackgroundImage';
+import BackgroundImage from './BackgroundImage';
 module parser from './parser';
-module Puzzle from './Puzzle';
+import Puzzle from './Puzzle';
 
 class Sprites {
   constructor(csses = []) {
@@ -32,7 +32,7 @@ class Sprites {
 
   static config(data = {}) {
     Object.keys(data).forEach(function(k) {
-      gConfig.k = data[k];
+      gConfig[k] = data[k];
     });
   }
   static parse(csses) {

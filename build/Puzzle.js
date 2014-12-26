@@ -8,28 +8,51 @@ var Buffer=require('buffer');
   }
 
   Puzzle.prototype.parse = function(csses) {
-    if(csses===void 0)csses=[];csses.forEach(function(css) {
-      css.res = css.string;
-      //从尾部开始不影响字符串拼接
-      css.bgis.reverse().forEach(function(bgi) {
+    //先过滤掉无需处理的
+    if(csses===void 0)csses=[];this.filter(csses);
+
+    //预处理，排除异常情况，当只有1个背景图时忽略
+    var count = 0;
+    var hash = {};
+    csses.forEach(function(css) {
+      //结果记录在res属性上：string表示处理后的css code
+      css.res = {
+        string: css.string
+      };
+      css.bgis.forEach(function(bgi) {
         if(!css.path) {
           throw new Error('css file missing path when has background-image to be puzzled: ' + JSON.stringify(css));
         }
-        var uri = path.join(css.path, bgi.url);
+        var uri = path.join(css.path, bgi.url.string);
         if(!fs.existsSync(uri)) {
           throw new Error('uri is 404: ' + uri + ' in: ' + css.path);
         }
         if(!fs.statSync(uri).isFile()) {
           throw new Error('uri is not a file: ' + uri + ' in: ' + css.path);
         }
-        var buf = fs.readFileSync(uri);
-        for(var i = 0; i < buf.length && i < 100; i++) {
-          //console.log(buf[i])
+        //存储绝对资源路径位置
+        bgi.url.resource = uri;
+        if(!hash.hasOwnProperty(uri)) {
+          count++;
+          hash[uri] = true;
         }
-        fs.writeFileSync(uri + '.txt', buf.toString());
       });
     });
+
+    //从头开始处理，记录在res对象上：hash存储图片数据，以key为位置，二进制为值
+    if(count > 1) {
+      count = 0;
+      csses.forEach(function(css) {
+        css.bgis.forEach(function(bgi) {
+          //
+        });
+      });
+    }
+
     return csses;
+  }
+  Puzzle.prototype.filter = function(csses) {
+
   }
 
   Puzzle.parse=function(csses) {
