@@ -588,6 +588,7 @@ describe('puzzle test', function() {
         'index': 14
       },
       'radio': 1,
+      'position': [],
       'paddingtop': 0,
       'paddingright': 0,
       'paddingbottom': 0,
@@ -604,5 +605,32 @@ describe('puzzle test', function() {
     }];
     var res = Puzzle.parse(param);
     expect(res[0].res.string).to.eql(param[0].string);
+    expect(res[0].res.hash).to.eql(undefined);
+  });
+  it('online uri', function() {
+    var bgi = new BackgroundImage({
+      'url': {
+        'string': 'http://www.xxx.com',
+        'index': 14
+      },
+      'radio': 1,
+      'position': [],
+      'paddingtop': 0,
+      'paddingright': 0,
+      'paddingbottom': 0,
+      'paddingleft': 0,
+      'width': 16,
+      'height': 16,
+      'wunits': 'px',
+      'hunits': 'px'
+    });
+    var param = [{
+      'string': 'p{background:(000.png)}',
+      'path': path.join(__dirname, 'img'),
+      'bgis': [bgi, bgi]
+    }];
+    var res = Puzzle.parse(param);
+    expect(res[0].res.string).to.eql(param[0].string);
+    expect(res[0].res.hash).to.eql(undefined);
   });
 });

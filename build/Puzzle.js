@@ -20,21 +20,12 @@ var Buffer=require('buffer');
         string: css.string
       };
       css.bgis.forEach(function(bgi) {
-        if(!css.path) {
-          throw new Error('css file missing path when has background-image to be puzzled: ' + JSON.stringify(css));
-        }
-        var uri = path.join(css.path, bgi.url.string);
-        if(!fs.existsSync(uri)) {
-          throw new Error('uri is 404: ' + uri + ' in: ' + css.path);
-        }
-        if(!fs.statSync(uri).isFile()) {
-          throw new Error('uri is not a file: ' + uri + ' in: ' + css.path);
-        }
-        //存储绝对资源路径位置
-        bgi.url.resource = uri;
-        if(!hash.hasOwnProperty(uri)) {
-          count++;
-          hash[uri] = true;
+        if(!bgi.ignore) {
+          var uri = bgi.url.resource;
+          if(!hash.hasOwnProperty(uri)) {
+            count++;
+            hash[uri] = true;
+          }
         }
       });
     });
@@ -52,7 +43,30 @@ var Buffer=require('buffer');
     return csses;
   }
   Puzzle.prototype.filter = function(csses) {
-
+    csses.forEach(function(css) {
+      css.bgis.forEach(function(bgi) {
+        if(!css.path) {
+          throw new Error('css file missing path when has background-image to be puzzled: ' + JSON.stringify(css));
+        }
+        //无视使用base64、线上路径、自己写了background-position
+        if(bgi.url.string.indexOf('data:') == 0
+          || /^(http|ftp)/.test(bgi.url.string)
+          || bgi.position.length) {
+          bgi.ignore = true;
+          return;
+        }
+        //各种404
+        var uri = path.join(css.path, bgi.url.string);
+        if(!fs.existsSync(uri)) {
+          throw new Error('uri is 404: ' + uri + ' in: ' + css.path);
+        }
+        if(!fs.statSync(uri).isFile()) {
+          throw new Error('uri is not a file: ' + uri + ' in: ' + css.path);
+        }
+        //存储绝对资源路径位置
+        bgi.url.resource = uri;
+      });
+    });
   }
 
   Puzzle.parse=function(csses) {
