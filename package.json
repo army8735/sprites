@@ -28,8 +28,8 @@
   "author": "army8735",
   "license": "MIT",
   "dependencies": {
-    "homunculus": "^0.7.1",
-    "images": "2.0.2"
+    "homunculus": "^0.7.7",
+    "images": "^2.1.0"
   },
   "main": "./index",
   "engines": {
@@ -43,7 +43,7 @@
     "gulp": "^3.6.0",
     "gulp-clean": "^0.2.4",
     "gulp-util": "^2.2.14",
-    "jsdc": "^0.5.0",
+    "jsdc": "^0.5.4",
     "mocha": "^1.18.2",
     "mocha-lcov-reporter": "0.0.1",
     "through2": "^0.4.2"
