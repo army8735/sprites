@@ -4,6 +4,7 @@ var Token = homunculus.getClass('token', 'css');
 
 class Parser {
   constructor() {
+    this.列表 = [];
   }
 
   解析(css) {
@@ -19,6 +20,10 @@ class Parser {
           倍率 = 自己.获取倍率(节点.leaf(1));
           break;
         case CssNode.STYLE:
+          //识别规律必须是简写background，且无前缀hack，分开写background-image忽略
+          if(节点.first().first().content().toLowerCase() == 'background') {
+            自己.分析背景(节点, 倍率);
+          }
           break;
       }
       节点.leaves().forEach(function(子节点) {
@@ -45,5 +50,59 @@ class Parser {
       }
     }
     return 1;
+  }
+  分析背景(节点, 倍率) {
+    //此选择器必须有width和height属性，且为px，否则忽略
+    var 父节点 = 节点.parent();
+    var width = 0;
+    var height = 0;
+    父节点.leaves().forEach(function(样式节点) {
+      var 键 = 样式节点.first().first().content().toLowerCase();
+      if(键 == 'width') {
+        if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
+          width = parseInt(样式节点.leaf(2).first().content());
+        }
+      }
+      else if(键 == 'height') {
+        if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
+          height = parseInt(样式节点.leaf(2).first().content());
+        }
+      }
+    });
+    if(!width || !height) {
+      return;
+    }
+    //遍历background的值节点，简写的url后面必须标明repeat且无position，否则忽略
+    var 值节点 = 节点.leaf(2);
+    for(var i = 0, len = 值节点.size(); i < len; i++) {
+      var 子节点 = 值节点.leaf(i);
+      if(子节点.name() == CssNode.URL) {
+        var repeat节点 = 子节点.next();
+        //repeat类型的也忽略
+        if(!{
+            'no-repeat': true,
+            'repeat-x': true,
+            'repeat-y': true
+          }.hasOwnProperty(repeat节点.token().content().toLowerCase())) {
+          return;
+        }
+        var 位置节点 = repeat节点.next();
+        //可能存在啊的attachment节点需忽略
+        if({
+            'fixed': true,
+            'scroll': true
+          }.hasOwnProperty(位置节点.token().content().toLowerCase())) {
+          位置节点 = 位置节点.next();
+        }
+        if(位置节点.token().type() == Token.NUMBER) {
+          return;
+        }
+        this.记录(子节点, 倍率, repeat节点);
+        return;
+      }
+    }
+  }
+  记录() {
+
   }
 }
