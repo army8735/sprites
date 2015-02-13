@@ -11,6 +11,7 @@ class Parser {
     var 解析器 = homunculus.getParser('css');
     var 语法树 = 解析器.parse(css.内容);
     this.递归(语法树, 1);
+    return this.列表;
   }
   递归(节点, 倍率) {
     var 自己 = this;
