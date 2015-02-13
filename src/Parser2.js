@@ -78,8 +78,13 @@ class Parser {
     for(var i = 0, len = 值节点.size(); i < len; i++) {
       var 子节点 = 值节点.leaf(i);
       if(子节点.name() == CssNode.URL) {
-        var repeat节点 = 子节点.next();
+        //无视使用base64、线上路径
+        var url节点 = 子节点.leaf(2);
+        if(/^(data:|http:|https:|ftp:)/i.test(url节点.token().content())) {
+          return;
+        }
         //repeat类型的也忽略
+        var repeat节点 = 子节点.next();
         if(!{
             'no-repeat': true,
             'repeat-x': true,
@@ -98,13 +103,12 @@ class Parser {
         if(位置节点.token().type() == Token.NUMBER) {
           return;
         }
-        this.记录(子节点, 倍率, repeat节点, 宽, 高);
+        this.记录(url节点, 倍率, repeat节点, 宽, 高);
         return;
       }
     }
   }
-  记录(节点, 倍率, repeat节点, 宽, 高) {
-    var url节点 = 节点.leaf(2).token();
+  记录(url节点, 倍率, repeat节点, 宽, 高) {
     var token = url节点.token();
     this.列表.push({
       'url': token.val(),

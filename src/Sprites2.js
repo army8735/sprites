@@ -1,6 +1,7 @@
 module fs from 'fs';
 
 import Parser from './Parser2';
+import Puzzle from './Puzzle2';
 
 class Sprites {
   constructor(css列表 = []) {
@@ -22,6 +23,8 @@ class Sprites {
       }
       css.背景列表 = 解析器.解析(css);
     });
+
+    var 拼图 = new Puzzle(this.css列表);
   }
 }
 
