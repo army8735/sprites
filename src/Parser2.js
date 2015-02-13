@@ -54,22 +54,22 @@ class Parser {
   分析背景(节点, 倍率) {
     //此选择器必须有width和height属性，且为px，否则忽略
     var 父节点 = 节点.parent();
-    var width = 0;
-    var height = 0;
+    var 宽 = 0;
+    var 高 = 0;
     父节点.leaves().forEach(function(样式节点) {
       var 键 = 样式节点.first().first().content().toLowerCase();
       if(键 == 'width') {
         if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
-          width = parseInt(样式节点.leaf(2).first().content());
+          宽 = parseInt(样式节点.leaf(2).first().content());
         }
       }
       else if(键 == 'height') {
         if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
-          height = parseInt(样式节点.leaf(2).first().content());
+          高 = parseInt(样式节点.leaf(2).first().content());
         }
       }
     });
-    if(!width || !height) {
+    if(!宽 || !高) {
       return;
     }
     //遍历background的值节点，简写的url后面必须标明repeat且无position，否则忽略
@@ -87,7 +87,7 @@ class Parser {
           return;
         }
         var 位置节点 = repeat节点.next();
-        //可能存在啊的attachment节点需忽略
+        //可能存在的attachment节点需忽略
         if({
             'fixed': true,
             'scroll': true
@@ -97,12 +97,23 @@ class Parser {
         if(位置节点.token().type() == Token.NUMBER) {
           return;
         }
-        this.记录(子节点, 倍率, repeat节点);
+        this.记录(子节点, 倍率, repeat节点, 宽, 高);
         return;
       }
     }
   }
-  记录() {
-
+  记录(节点, 倍率, repeat节点, 宽, 高) {
+    var url节点 = 节点.leaf(2).token();
+    var token = url节点.token();
+    this.列表.push({
+      'url': token.val(),
+      '开始': token.sIndex(),
+      '结束': token.sIndex() + token.content().length,
+      '倍率': 倍率,
+      '重复': repeat节点.token().content().toLowerCase(),
+      '插入位置': repeat节点.token().sIndex(),
+      '宽': 宽,
+      '高': 高
+    });
   }
 }
