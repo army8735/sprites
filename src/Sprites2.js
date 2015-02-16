@@ -6,6 +6,8 @@ import Puzzle from './Puzzle2';
 class Sprites {
   constructor(css列表 = []) {
     this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
+    this.映射 = null;
+    this.根路径 = '';
   }
 
   //一个项目所有需要处理的css数据通过列表传入
@@ -24,7 +26,24 @@ class Sprites {
       css.背景列表 = 解析器.解析(css);
     });
 
-    var 拼图 = new Puzzle(this.css列表);
+    var 拼图 = new Puzzle();
+    return 拼图.解析(this.css列表, this.读根路径(), this.读映射());
+  }
+
+  读映射() {
+    return this.映射;
+  }
+  写映射(映射) {
+    this.映射 = 映射;
+    return this.映射;
+  }
+
+  读根路径() {
+    return this.根路径;
+  }
+  写根路径(根路径) {
+    this.根路径 = 根路径;
+    return this.根路径;
   }
 }
 

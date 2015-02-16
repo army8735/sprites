@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "homunculus": "^0.7.8",
-    "images": "^2.1.0"
+    "images": "^2.1.1"
   },
   "main": "./index",
   "engines": {
