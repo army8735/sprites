@@ -22,7 +22,7 @@ class Parser {
           break;
         case CssNode.STYLE:
           //识别规律必须是简写background，且无前缀hack，分开写background-image忽略
-          if(节点.first().first().content().toLowerCase() == 'background') {
+          if(节点.first().first().token().content().toLowerCase() == 'background') {
             自己.分析背景(节点, 倍率);
           }
           break;
@@ -58,15 +58,20 @@ class Parser {
     var 宽 = 0;
     var 高 = 0;
     父节点.leaves().forEach(function(样式节点) {
-      var 键 = 样式节点.first().first().content().toLowerCase();
+      //忽略非style节点，如{}
+      if(样式节点.name() != CssNode.STYLE) {
+        return;
+      }
+      var 键 = 样式节点.first().first().token().content().toLowerCase();
+      //支持持px
       if(键 == 'width') {
-        if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
-          宽 = parseInt(样式节点.leaf(2).first().content());
+        if(样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
+          宽 = parseInt(样式节点.leaf(2).first().token().content());
         }
       }
       else if(键 == 'height') {
-        if(样式节点.leaf(2).leaf(2).content().toLowerCase() == 'px') {
-          高 = parseInt(样式节点.leaf(2).first().content());
+        if(样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
+          高 = parseInt(样式节点.leaf(2).first().token().content());
         }
       }
     });
@@ -94,13 +99,17 @@ class Parser {
         }
         var 位置节点 = repeat节点.next();
         //可能存在的attachment节点需忽略
-        if({
+        if(位置节点
+          && 位置节点.name() == CssNode.TOKEN
+          && {
             'fixed': true,
             'scroll': true
           }.hasOwnProperty(位置节点.token().content().toLowerCase())) {
           位置节点 = 位置节点.next();
         }
-        if(位置节点.token().type() == Token.NUMBER) {
+        if(位置节点
+          && 位置节点.name() == CssNode.TOKEN
+          && 位置节点.token().type() == Token.NUMBER) {
           return;
         }
         this.记录(url节点, 倍率, repeat节点, 宽, 高);
