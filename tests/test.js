@@ -98,7 +98,7 @@ describe('Parser', function() {
     expect(res).to.eql([]);
   });
 
-  it('w/h, no-repeat, no pos, radio 1', function() {
+  it('no w/h, no-repeat, no pos, radio 1', function() {
     var parser = new Parser();
     var res = parser.解析({
       '内容': arr[11]
@@ -106,7 +106,7 @@ describe('Parser', function() {
     expect(res).to.eql([{"url":"l.png","开始":69,"结束":76,"倍率":1,"重复":"no-repeat","插入位置":77,"宽":-1,"高":-1}]);
   });
 
-  it('w/h, no-repeat, no pos, radio 2', function() {
+  it('no w/h, no-repeat, no pos, radio 2', function() {
     var parser = new Parser();
     var res = parser.解析({
       '内容': arr[12]
@@ -114,12 +114,44 @@ describe('Parser', function() {
     expect(res).to.eql([{"url":"m.png","开始":69,"结束":76,"倍率":2,"重复":"no-repeat","插入位置":77,"宽":-1,"高":-1}]);
   });
 
-  it('w/h, no-repeat, no pos, radio 3', function() {
+  it('no w/h, no-repeat, no pos, radio 3', function() {
     var parser = new Parser();
     var res = parser.解析({
       '内容': arr[13]
     });
     expect(res).to.eql([{"url":"n.png","开始":71,"结束":78,"倍率":3,"重复":"no-repeat","插入位置":79,"宽":-1,"高":-1}]);
+  });
+
+  it('no w/h, no-repeat, no pos, no-radio', function() {
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': arr[14]
+    });
+    expect(res).to.eql([{"url":"n.png","开始":42,"结束":49,"倍率":1,"重复":"no-repeat","插入位置":50,"宽":-1,"高":-1}]);
+  });
+
+  it('w 0, no-repeat, no pos', function() {
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': arr[15]
+    });
+    expect(res).to.eql([]);
+  });
+
+  it('base64', function() {
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': arr[16]
+    });
+    expect(res).to.eql([]);
+  });
+
+  it('http', function() {
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': arr[17]
+    });
+    expect(res).to.eql([]);
   });
 });
 

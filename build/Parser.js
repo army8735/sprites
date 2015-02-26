@@ -64,15 +64,21 @@ var Token = homunculus.getClass('token', 'css');
         return;
       }
       var 键 = 样式节点.first().first().token().content().toLowerCase();
-      //支持持px
+      //仅支持px
       if(键 == 'width') {
-        if(样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
+        if(样式节点.leaf(2).size() > 1 && 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
           宽 = parseInt(样式节点.leaf(2).first().token().content());
+        }
+        else {
+          宽 = 0;
         }
       }
       else if(键 == 'height') {
-        if(样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
+        if(样式节点.leaf(2).size() > 1 && 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
           高 = parseInt(样式节点.leaf(2).first().token().content());
+        }
+        else {
+          高 = 0;
         }
       }
     });
@@ -87,7 +93,7 @@ var Token = homunculus.getClass('token', 'css');
       if(子节点.name() == CssNode.URL) {
         //无视使用base64、线上路径
         var url节点 = 子节点.leaf(2);
-        if(/^(data:|http:|https:|ftp:)/i.test(url节点.token().content())) {
+        if(/^(data:|http:|https:|ftp:)/i.test(url节点.token().val())) {
           return;
         }
         //repeat类型的也忽略
