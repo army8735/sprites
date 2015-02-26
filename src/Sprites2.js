@@ -11,10 +11,7 @@ class Sprites {
   }
 
   //一个项目所有需要处理的css数据通过列表传入
-  解析(css列表) {
-    if(css列表 !== undefined) {
-      this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
-    }
+  解析() {
     var 解析器 = new Parser();
 
     //遍历处理每个，解析全部后进行合并图片步骤

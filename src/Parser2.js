@@ -55,8 +55,9 @@ class Parser {
   分析背景(节点, 倍率) {
     //此选择器必须有width和height属性，且为px，否则忽略
     var 父节点 = 节点.parent();
-    var 宽 = 0;
-    var 高 = 0;
+    //高宽可以省略，默认-1
+    var 宽 = -1;
+    var 高 = -1;
     父节点.leaves().forEach(function(样式节点) {
       //忽略非style节点，如{}
       if(样式节点.name() != CssNode.STYLE) {
@@ -75,6 +76,7 @@ class Parser {
         }
       }
     });
+    //0高宽忽略
     if(!宽 || !高) {
       return;
     }
