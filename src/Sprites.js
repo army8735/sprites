@@ -4,7 +4,7 @@ import Parser from './Parser';
 import Puzzle from './Puzzle';
 
 class Sprites {
-  constructor(css列表 = [], 映射 = null, 根路径 = '', 间距 = 10) {
+  constructor(css列表, 映射 = null, 根路径 = '', 间距 = 10) {
     this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
     this.映射 = 映射;
     this.根路径 = 根路径;

@@ -1,0 +1,63 @@
+.a{
+  background:url('a.png');
+}
+
+.b{
+  background:url('b.png') repeat;
+}
+
+.c{
+  background:url('c.png') no-repeat;
+}
+
+.d{
+  background:url('d.png') repeat-x;
+}
+
+.e{
+  background:url('e.png') repeat-y;
+}
+
+.f{
+  background:url('f.png') no-repeat fixed 0 0;
+}
+
+.g{
+  background:url('g.png') no-repeat fixed;
+}
+
+.h{
+  background:url('h.png') no-repeat 0 0;
+}
+
+.i{
+  background-image:url('i.png');
+}
+
+.j{
+  background:url('j.png') no-repeat;
+  width:10px;
+  height:10px;
+}
+
+.k{
+  _background:url('k.png') no-repeat;
+}
+
+@media screen and (device-pixel-ratio:1) {
+  .l {
+    background:url('l.png') no-repeat;
+  }
+}
+
+@media screen and (device-pixel-ratio:2) {
+  .m {
+    background:url('m.png') no-repeat;
+  }
+}
+
+@media screen and (device-pixel-ratio:2.5) {
+  .n {
+    background:url('n.png') no-repeat;
+  }
+}

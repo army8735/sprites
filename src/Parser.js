@@ -41,9 +41,9 @@ class Parser {
             var 表达式 = 子节点.leaf(j);
             if(表达式.name() == CssNode.EXPR) {
               var 键 = 表达式.leaf(1);
-              if(键.last().content().toLowerCase().indexOf('device-pixel-ratio') > -1) {
+              if(键.last().token().content().toLowerCase().indexOf('device-pixel-ratio') > -1) {
                 var 值 = 表达式.leaf(3);
-                return parseInt(值.content()) || 1;
+                return Math.ceil(parseFloat(值.first().token().content())) || 1;
               }
             }
           }
@@ -92,14 +92,14 @@ class Parser {
         }
         //repeat类型的也忽略
         var repeat节点 = 子节点.next();
-        if(!{
+        if(repeat节点 && !{
             'no-repeat': true,
             'repeat-x': true,
             'repeat-y': true
           }.hasOwnProperty(repeat节点.token().content().toLowerCase())) {
           return;
         }
-        var 位置节点 = repeat节点.next();
+        var 位置节点 = (repeat节点 || 子节点).next();
         //可能存在的attachment节点需忽略
         if(位置节点
           && 位置节点.name() == CssNode.TOKEN
@@ -121,13 +121,14 @@ class Parser {
   }
   记录(url节点, 倍率, repeat节点, 宽, 高) {
     var token = url节点.token();
+    var 右括号 = url节点.parent().last().token();
     this.列表.push({
       'url': token.val(),
       '开始': token.sIndex(),
       '结束': token.sIndex() + token.content().length,
       '倍率': 倍率,
-      '重复': repeat节点.token().content().toLowerCase(),
-      '插入位置': repeat节点.token().sIndex(),
+      '重复': repeat节点 ? repeat节点.token().content().toLowerCase() : 'no-repeat',
+      '插入位置': 右括号.sIndex() + 右括号.content().length,
       '宽': 宽,
       '高': 高
     });

@@ -5,7 +5,7 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
 
 
   function Sprites(css列表, 映射, 根路径, 间距) {
-    if(css列表===void 0)css列表=[];if(映射===void 0)映射=null;if(根路径===void 0)根路径='';if(间距===void 0)间距=10;this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
+    if(映射===void 0)映射=null;if(根路径===void 0)根路径='';if(间距===void 0)间距=10;this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
     this.映射 = 映射;
     this.根路径 = 根路径;
     this.间距 = 间距;
