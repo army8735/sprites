@@ -1,7 +1,7 @@
 module fs from 'fs';
 
-import Parser from './Parser2';
-import Puzzle from './Puzzle2';
+import Parser from './Parser';
+import Puzzle from './Puzzle';
 
 class Sprites {
   constructor(css列表 = [], 映射 = null, 根路径 = '', 间距 = 10) {

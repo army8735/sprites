@@ -1,7 +1,7 @@
 var fs=require('fs');
 
-var Parser=function(){var _0=require('./Parser2');return _0.hasOwnProperty("Parser")?_0.Parser:_0.hasOwnProperty("default")?_0.default:_0}();
-var Puzzle=function(){var _1=require('./Puzzle2');return _1.hasOwnProperty("Puzzle")?_1.Puzzle:_1.hasOwnProperty("default")?_1.default:_1}();
+var Parser=function(){var _0=require('./Parser');return _0.hasOwnProperty("Parser")?_0.Parser:_0.hasOwnProperty("default")?_0.default:_0}();
+var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzle")?_1.Puzzle:_1.hasOwnProperty("default")?_1.default:_1}();
 
 
   function Sprites(css列表, 映射, 根路径, 间距) {
