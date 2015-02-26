@@ -10,13 +10,14 @@ class Puzzle {
     this.根路径 = 根路径;
     this.映射 = 映射;
   }
+
   解析() {
     //数据中先按不同格式储存hash，再二级按是否重复储存hash
     var 数据1倍 = {};
     var 数据2倍 = {};
     var 自己 = this;
 
-    //第一次遍历计算所需图像高宽度
+    //第1次遍历计算所需图像高宽度
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
         var 文件 = path.join(path.dirname(css.路径), 背景.url);
@@ -68,6 +69,28 @@ class Puzzle {
           default:
             throw new Error('不支持的文件后缀名：' + 文件 + '\n' + css.路径);
         }
+      });
+    });
+
+    //用计算出的高宽先创造个空白图像
+    自己.初始化空白图像(数据1倍);
+    自己.初始化空白图像(数据2倍);
+    console.log(数据1倍, 数据2倍);
+
+    //第2次遍历拼图
+    自己.css列表.forEach(function(css) {
+      css.背景列表.forEach(function(背景) {
+
+      });
+    });
+  }
+
+  初始化空白图像(数据) {
+    Object.keys(数据).forEach(function(格式) {
+      var 格式数据 = 数据[格式];
+      Object.keys(格式数据).forEach(function(重复) {
+        var 重复数据 = 格式数据[重复];
+        重复数据.图像 = images(重复数据.宽, 重复数据.高);
       });
     });
   }
