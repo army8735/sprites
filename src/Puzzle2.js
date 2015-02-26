@@ -10,7 +10,7 @@ class Puzzle {
     this.映射 = 映射;
   }
 
-  解析() {
+  解析(间距) {
     //数据中先按不同格式储存hash，再二级按是否重复储存hash
     var 数据1倍 = {};
     var 数据2倍 = {};
@@ -62,11 +62,11 @@ class Puzzle {
               case 'no-repeat':
               case 'repeat-x':
                 重复数据.宽 = Math.max(重复数据.宽, 背景.图宽);
-                重复数据.高 += 背景.图高 + 10;
+                重复数据.高 += 背景.图高 + 间距;
                 break;
               case 'repeat-y':
                 重复数据.高 = Math.max(重复数据.高, 背景.图高);
-                重复数据.宽 += 背景.图宽 + 10;
+                重复数据.宽 += 背景.图宽 + 间距;
                 break;
             }
             break;
@@ -79,12 +79,10 @@ class Puzzle {
     //用计算出的高宽先创造个空白图像
     自己.初始化图像(数据1倍);
     自己.初始化图像(数据2倍);
-    console.log(数据1倍, 数据2倍);
 
     //第2次遍历拼图
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-        console.log(背景);
         var 背景图 = images(背景.路径);
         var 引用 = 背景.引用;
         switch(背景.重复) {
@@ -98,9 +96,15 @@ class Puzzle {
             引用.索引 += 背景.图宽;
             break;
         }
-        引用.索引 += 10;
+        引用.索引 += 间距;
       });
     });
+
+    //所有数据存入array
+    var 返回 = [];
+    自己.存入结果(返回, 数据1倍);
+    自己.存入结果(返回, 数据2倍);
+    return 返回;
   }
   初始化图像(数据) {
     Object.keys(数据).forEach(function(格式) {
@@ -108,6 +112,15 @@ class Puzzle {
       Object.keys(格式数据).forEach(function(重复) {
         var 重复数据 = 格式数据[重复];
         重复数据.图像 = images(重复数据.宽, 重复数据.高);
+      });
+    });
+  }
+  存入结果(返回, 数据) {
+    Object.keys(数据).forEach(function(格式) {
+      var 格式数据 = 数据[格式];
+      Object.keys(格式数据).forEach(function(重复) {
+        var 重复数据 = 格式数据[重复];
+        返回.push(重复数据.图像);
       });
     });
   }
