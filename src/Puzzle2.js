@@ -2,7 +2,7 @@ module path from 'path';
 module fs from 'fs';
 module Buffer from 'buffer';
 
-//module images from 'images';
+module images from 'images';
 
 class Puzzle {
   constructor(css列表, 根路径, 映射) {
@@ -19,9 +19,10 @@ class Puzzle {
     //第一次遍历计算所需图像高宽度
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-        console.log(背景)
-        //var 图像 = images();
-        var 文件 = path.join(css.路径, 背景.url);
+        var 文件 = path.join(path.dirname(css.路径), 背景.url);
+        var 图片 = images(文件);
+        背景.图片 = 图片;
+
         var 后缀 = path.extname(文件).toLowerCase();
         switch(后缀) {
           case '.gif':
@@ -39,26 +40,28 @@ class Puzzle {
             数据[格式] = 数据[格式] || {};
             var 格式数据 = 数据[格式];
             格式数据[背景.重复] = 格式数据[背景.重复] || { 宽: 0, 高: 0 };
-            var 重复数据 = 格式数据[背景.重复];
 
+            背景.图高 = 背景.高;
+            背景.图宽 = 背景.宽;
             //省略高宽则计算图片高宽
-            if(背景.高 == -1) {
-              //TODO
+            if(背景.图高 == -1) {
+              背景.图高 = 图片.height();
             }
-            if(背景.宽 == -1) {
-              //TODO
+            if(背景.图宽 == -1) {
+              背景.图高 = 图片.width();
             }
 
+            var 重复数据 = 格式数据[背景.重复];
             //不重复和repeat-x均纵向叠加，repeat-y横向叠加，间隔均为10
             switch(背景.重复) {
               case 'no-repeat':
               case 'repeat-x':
-                重复数据.宽 = Math.max(重复数据.宽, 背景.宽);
-                重复数据.高 += 背景.高 + 10;
+                重复数据.宽 = Math.max(重复数据.宽, 背景.图宽);
+                重复数据.高 += 背景.图高 + 10;
                 break;
               case 'repeat-y':
-                重复数据.高 = Math.max(重复数据.高, 背景.高);
-                重复数据.宽 += 背景.宽 + 10;
+                重复数据.高 = Math.max(重复数据.高, 背景.图高);
+                重复数据.宽 += 背景.图宽 + 10;
                 break;
             }
             break;
