@@ -19,9 +19,9 @@ class Puzzle {
     //第1次遍历计算所需图像高宽度
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-        var 文件 = path.join(path.dirname(css.路径), 背景.url);
+        var 路径 = path.join(path.dirname(css.路径), 背景.url);
 
-        var 后缀 = path.extname(文件).toLowerCase();
+        var 后缀 = path.extname(路径).toLowerCase();
         switch(后缀) {
           case '.gif':
           case '.jpg':
@@ -32,26 +32,27 @@ class Puzzle {
             var 格式 = 后缀.slice(1);
             //区分png8和png24，以IHDR的ColorType是否为3确定
             if(格式 == 'png') {
-              var 读取buf = fs.readFileSync(文件);
+              var 读取buf = fs.readFileSync(路径);
               格式 += 读取buf[25] == 3 ? 8 : 24;
             }
             数据[格式] = 数据[格式] || {};
             var 格式数据 = 数据[格式];
-            格式数据[背景.重复] = 格式数据[背景.重复] || { 宽: 0, 高: 0 };
+            格式数据[背景.重复] = 格式数据[背景.重复] || { 宽: 0, 高: 0, 索引: 0 };
 
             //存放引用
             背景.引用 = 格式数据[背景.重复];
+            背景.路径 = 路径;
 
             背景.图高 = 背景.高;
             背景.图宽 = 背景.宽;
             var 图片;
             //省略高宽则计算图片高宽
             if(背景.图高 == -1) {
-              图片 = 图片 || images(文件);
+              图片 = 图片 || images(路径);
               背景.图高 = 图片.height();
             }
             if(背景.图宽 == -1) {
-              图片 = 图片 || images(文件);
+              图片 = 图片 || images(路径);
               背景.图高 = 图片.width();
             }
 
@@ -70,7 +71,7 @@ class Puzzle {
             }
             break;
           default:
-            throw new Error('不支持的文件后缀名：' + 文件 + '\n' + css.路径);
+            throw new Error('不支持的文件后缀名：' + 路径 + '\n' + css.路径);
         }
       });
     });
@@ -83,7 +84,21 @@ class Puzzle {
     //第2次遍历拼图
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-        console.log(背景)
+        console.log(背景);
+        var 背景图 = images(背景.路径);
+        var 引用 = 背景.引用;
+        switch(背景.重复) {
+          case 'no-repeat':
+          case 'repeat-x':
+            引用.图像.draw(背景图, 0, 引用.索引);
+            引用.索引 += 背景.图高;
+            break;
+          case 'repeat-y':
+            引用.图像.draw(背景.路径, 引用.索引, 0);
+            引用.索引 += 背景.图宽;
+            break;
+        }
+        引用.索引 += 10;
       });
     });
   }
