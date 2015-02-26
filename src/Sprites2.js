@@ -4,10 +4,11 @@ import Parser from './Parser2';
 import Puzzle from './Puzzle2';
 
 class Sprites {
-  constructor(css列表 = [], 映射 = null, 根路径 = '') {
+  constructor(css列表 = [], 映射 = null, 根路径 = '', 间距 = 10) {
     this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
     this.映射 = 映射;
     this.根路径 = 根路径;
+    this.间距 = 间距;
   }
 
   //一个项目所有需要处理的css数据通过列表传入
@@ -26,7 +27,7 @@ class Sprites {
     });
 
     var 拼图 = new Puzzle(this.css列表, this.读根路径(), this.读映射());
-    return 拼图.解析();
+    return 拼图.解析(this.读间距());
   }
 
   读映射() {
@@ -43,6 +44,14 @@ class Sprites {
   写根路径(根路径) {
     this.根路径 = 根路径;
     return this.根路径;
+  }
+
+  读间距() {
+    return this.间距;
+  }
+  写间距(间距) {
+    this.间距 = 间距;
+    return this.间距;
   }
 }
 
