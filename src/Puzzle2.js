@@ -1,6 +1,5 @@
 module path from 'path';
 module fs from 'fs';
-module Buffer from 'buffer';
 
 module images from 'images';
 
@@ -21,8 +20,6 @@ class Puzzle {
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
         var 文件 = path.join(path.dirname(css.路径), 背景.url);
-        var 图片 = images(文件);
-        背景.图片 = 图片;
 
         var 后缀 = path.extname(文件).toLowerCase();
         switch(后缀) {
@@ -42,13 +39,19 @@ class Puzzle {
             var 格式数据 = 数据[格式];
             格式数据[背景.重复] = 格式数据[背景.重复] || { 宽: 0, 高: 0 };
 
+            //存放引用
+            背景.引用 = 格式数据[背景.重复];
+
             背景.图高 = 背景.高;
             背景.图宽 = 背景.宽;
+            var 图片;
             //省略高宽则计算图片高宽
             if(背景.图高 == -1) {
+              图片 = 图片 || images(文件);
               背景.图高 = 图片.height();
             }
             if(背景.图宽 == -1) {
+              图片 = 图片 || images(文件);
               背景.图高 = 图片.width();
             }
 
@@ -73,19 +76,18 @@ class Puzzle {
     });
 
     //用计算出的高宽先创造个空白图像
-    自己.初始化空白图像(数据1倍);
-    自己.初始化空白图像(数据2倍);
+    自己.初始化图像(数据1倍);
+    自己.初始化图像(数据2倍);
     console.log(数据1倍, 数据2倍);
 
     //第2次遍历拼图
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-
+        console.log(背景)
       });
     });
   }
-
-  初始化空白图像(数据) {
+  初始化图像(数据) {
     Object.keys(数据).forEach(function(格式) {
       var 格式数据 = 数据[格式];
       Object.keys(格式数据).forEach(function(重复) {
