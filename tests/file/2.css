@@ -1,0 +1,16 @@
+.a{
+  width:10px;
+  height:10px;
+  background:url("../img/join0.png") 0 0 no-repeat;
+}
+.b{
+  width:10px;
+  height:10px;
+  background:url("../img/join0.png") 0 -20px no-repeat;
+}
+.c{
+  background:url("../img/join1.png") 0 0 repeat-y;
+}
+.d{
+  background:url("../img/join1.png") -26px 0 repeat-y;
+}

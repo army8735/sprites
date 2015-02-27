@@ -29,6 +29,28 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
     var 拼图 = new Puzzle(this.css列表, this.读根路径(), this.读映射());
     return 拼图.解析(this.读间距());
   }
+  //将url回填css的内容，倒序进行不干扰索引
+  Sprites.prototype.替换 = function(url列表) {
+    var 结果 = this.css列表.reverse().map(function(css) {
+      var 内容 = css.内容;
+      css.背景列表.reverse().forEach(function(背景) {
+        //替换掉url和pos
+        switch(背景.重复) {
+          case 'no-repeat':
+          case 'repeat-x':
+            内容 = 内容.slice(0, 背景.开始) + '"' + url列表[背景.二级制索引].replace(/"/g, '\\"') + '"'
+              + 内容.slice(背景.结束, 背景.插入位置) + ' 0 ' + (背景.位置索引 ? -背景.位置索引 + 'px' : 0) + 内容.slice(背景.插入位置);
+            break;
+          case 'repeat-y':
+            内容 = 内容.slice(0, 背景.开始) + '"' + url列表[背景.二级制索引].replace(/"/g, '\\"') + '"'
+            + 内容.slice(背景.结束, 背景.插入位置) + ' ' + (背景.位置索引 ? -背景.位置索引 + 'px 0' : '0 0') + 内容.slice(背景.插入位置);
+            break;
+        }
+      });
+      return 内容;
+    });
+    return 结果.reverse();
+  }
 
   Sprites.prototype.读映射 = function() {
     return this.映射;

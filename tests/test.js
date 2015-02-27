@@ -156,13 +156,18 @@ describe('Parser', function() {
 });
 
 describe('Sprites', function() {
-  it.only('file', function() {
+  it('file', function() {
     var css = [{
       '路径': path.join(__dirname, './file/1.css')
     }];
     var sprites = new Sprites(css);
-    var res = sprites.解析();
-    console.log(JSON.stringify(css));
-    console.log(res)
+    var ret = sprites.解析();
+    expect(ret.length).to.eql(2);
+    var join0 = fs.readFileSync(path.join(__dirname, './img/join0.png'));
+    var join1 = fs.readFileSync(path.join(__dirname, './img/join1.png'));
+    expect(ret[0].图像).to.eql(join0);
+    expect(ret[1].图像).to.eql(join1);
+    var res = sprites.替换(['../img/join0.png', '../img/join1.png']);
+    expect(res).to.eql([fs.readFileSync(path.join(__dirname, './file/2.css'), { encoding: 'utf-8' })]);
   });
 });

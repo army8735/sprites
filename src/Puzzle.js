@@ -45,7 +45,7 @@ class Puzzle {
 
             背景.图高 = 背景.高;
             背景.图宽 = 背景.宽;
-            var 图片;
+            var 图片 = null;
             //省略高宽则计算图片高宽
             if(背景.图高 == -1) {
               图片 = 图片 || images(路径);
@@ -53,7 +53,7 @@ class Puzzle {
             }
             if(背景.图宽 == -1) {
               图片 = 图片 || images(路径);
-              背景.图高 = 图片.width();
+              背景.图宽 = 图片.width();
             }
 
             var 重复数据 = 格式数据[背景.重复];
@@ -85,6 +85,7 @@ class Puzzle {
       css.背景列表.forEach(function(背景) {
         var 背景图 = images(背景.路径);
         var 引用 = 背景.引用;
+        背景.位置索引 = 引用.索引;
         switch(背景.重复) {
           case 'no-repeat':
           case 'repeat-x':
@@ -104,12 +105,27 @@ class Puzzle {
     var 列表 = [];
     自己.存入结果(列表, 数据1倍);
     自己.存入结果(列表, 数据2倍);
+
     //转为Buffer
     var 二进制列表 = 列表.map(function(数据) {
       return {
         '图像':数据.图像.encode(数据.后缀),
         '后缀': 数据.后缀
       };
+    });
+
+    //背景列表添加索引指向二进制列表的项
+    var len = 列表.length;
+    自己.css列表.forEach(function(css) {
+      css.背景列表.forEach(function(背景) {
+        for(var i = 0; i < len; i++) {
+          if(列表[i].图像 == 背景.引用.图像) {
+            背景.二级制索引 = i;
+            delete 背景.引用;
+            return;
+          }
+        }
+      });
     });
 
     return 二进制列表;
