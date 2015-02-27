@@ -38,13 +38,13 @@ npm install sprites
   "后缀": String
 }]
 ```
- * 仅识别background缩写，分开的background-image将忽略
- * 前缀hack（如：-background）将忽略
- * background的url值为base64、线上地址时将忽略
- * background设置了position时将忽略
- * 此选择器的width/height为0时将忽略
- * 未设置width/height或不为px时将读取图片高宽
- * 图片如果是相对根路径，必须提供根路径配置
+  - 仅识别background缩写，分开的background-image将忽略
+  - 前缀hack（如：-background）将忽略
+  - background的url值为base64、线上地址时将忽略
+  - background设置了position时将忽略
+  - 此选择器的width/height为0时将忽略
+  - 未设置width/height或不为px时将读取图片高宽
+  - 图片如果是相对根路径，必须提供根路径配置
 * 替换(url列表:Array<String>):Array<String> 在解析的基础上，将存好的图片的url数组传回，替换掉原css中的引用，索引按`解析()`方法中的返回顺序
 * 读根路径():String 返回根路径
 * 写根路径(根路径:String):void 设置根路径
