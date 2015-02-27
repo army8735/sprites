@@ -162,6 +162,7 @@ describe('Sprites', function() {
     }];
     var sprites = new Sprites(css);
     sprites.写根路径(__dirname);
+    expect(sprites.读根路径()).to.eql(__dirname);
     var ret = sprites.解析();
     expect(ret.length).to.eql(2);
     var join0 = fs.readFileSync(path.join(__dirname, './img/join0.png'));
