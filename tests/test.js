@@ -161,6 +161,7 @@ describe('Sprites', function() {
       '路径': path.join(__dirname, './file/1.css')
     }];
     var sprites = new Sprites(css);
+    sprites.写根路径(__dirname);
     var ret = sprites.解析();
     expect(ret.length).to.eql(2);
     var join0 = fs.readFileSync(path.join(__dirname, './img/join0.png'));

@@ -4,9 +4,8 @@ var Parser=function(){var _0=require('./Parser');return _0.hasOwnProperty("Parse
 var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzle")?_1.Puzzle:_1.hasOwnProperty("default")?_1.default:_1}();
 
 
-  function Sprites(css列表, 映射, 根路径, 间距) {
-    if(映射===void 0)映射=null;if(根路径===void 0)根路径='';if(间距===void 0)间距=10;this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
-    this.映射 = 映射;
+  function Sprites(css列表, 根路径, 间距) {
+    if(根路径===void 0)根路径='';if(间距===void 0)间距=10;this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
     this.根路径 = 根路径;
     this.间距 = 间距;
   }
@@ -26,8 +25,8 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
       css.背景列表 = 解析器.解析(css);
     });
 
-    var 拼图 = new Puzzle(this.css列表, this.读根路径(), this.读映射());
-    return 拼图.解析(this.读间距());
+    var 拼图 = new Puzzle(this.css列表);
+    return 拼图.解析(this.读根路径(), this.读间距());
   }
   //将url回填css的内容，倒序进行不干扰索引
   Sprites.prototype.替换 = function(url列表) {
@@ -50,14 +49,6 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
       return 内容;
     });
     return 结果.reverse();
-  }
-
-  Sprites.prototype.读映射 = function() {
-    return this.映射;
-  }
-  Sprites.prototype.写映射 = function(映射) {
-    this.映射 = 映射;
-    return this.映射;
   }
 
   Sprites.prototype.读根路径 = function() {

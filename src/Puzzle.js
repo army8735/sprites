@@ -4,13 +4,11 @@ module fs from 'fs';
 module images from 'images';
 
 class Puzzle {
-  constructor(css列表, 根路径, 映射) {
+  constructor(css列表) {
     this.css列表 = css列表;
-    this.根路径 = 根路径;
-    this.映射 = 映射;
   }
 
-  解析(间距) {
+  解析(根路径, 间距) {
     //数据中先按不同格式储存hash，再二级按是否重复储存hash
     var 数据1倍 = {};
     var 数据2倍 = {};
@@ -19,7 +17,14 @@ class Puzzle {
     //第1次遍历计算所需图像高宽度
     自己.css列表.forEach(function(css) {
       css.背景列表.forEach(function(背景) {
-        var 路径 = path.join(path.dirname(css.路径), 背景.url);
+        var 路径 = null;
+        //根路径
+        if(背景.url.charAt(0) == '/') {
+          路径 = path.join(根路径, 背景.url);
+        }
+        else {
+          路径 = path.join(path.dirname(css.路径), 背景.url);
+        }
 
         var 后缀 = path.extname(路径).toLowerCase();
         switch(后缀) {

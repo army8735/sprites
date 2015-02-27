@@ -4,9 +4,8 @@ import Parser from './Parser';
 import Puzzle from './Puzzle';
 
 class Sprites {
-  constructor(css列表, 映射 = null, 根路径 = '', 间距 = 10) {
+  constructor(css列表, 根路径 = '', 间距 = 10) {
     this.css列表 = Array.isArray(css列表) ? css列表 : [css列表];
-    this.映射 = 映射;
     this.根路径 = 根路径;
     this.间距 = 间距;
   }
@@ -26,8 +25,8 @@ class Sprites {
       css.背景列表 = 解析器.解析(css);
     });
 
-    var 拼图 = new Puzzle(this.css列表, this.读根路径(), this.读映射());
-    return 拼图.解析(this.读间距());
+    var 拼图 = new Puzzle(this.css列表);
+    return 拼图.解析(this.读根路径(), this.读间距());
   }
   //将url回填css的内容，倒序进行不干扰索引
   替换(url列表) {
@@ -50,14 +49,6 @@ class Sprites {
       return 内容;
     });
     return 结果.reverse();
-  }
-
-  读映射() {
-    return this.映射;
-  }
-  写映射(映射) {
-    this.映射 = 映射;
-    return this.映射;
   }
 
   读根路径() {
