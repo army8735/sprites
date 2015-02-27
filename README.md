@@ -1,7 +1,6 @@
-sprites
-====
+# sprites
 
-> css auto sprites
+css auto sprites
 
 [![NPM version](https://badge.fury.io/js/sprites.png)](https://npmjs.org/package/sprites)
 [![Build Status](https://travis-ci.org/army8735/sprites.svg?branch=master)](https://travis-ci.org/army8735/sprites)
