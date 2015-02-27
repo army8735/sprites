@@ -12,6 +12,8 @@ css auto sprites
 npm install sprites
 ```
 
+[![intro](https://raw.githubusercontent.com/army8735/sprites/master/intro.png)](https://github.com/army8735/sprites)
+
 ## 使用说明
 * sprites自动分析传入css文件列表中的background部分，根据一定规则匹配出所有的背景图将之合并，即自动雪碧图
 * 解析语法树进行识别，保证准确性
