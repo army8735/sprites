@@ -66,16 +66,18 @@ class Parser {
       var 键 = 样式节点.first().first().token().content().toLowerCase();
       //仅支持px
       if(键 == 'width') {
-        if(样式节点.leaf(2).size() > 1 && 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
-          宽 = parseInt(样式节点.leaf(2).first().token().content());
+        if(样式节点.leaf(2).size() > 1) {
+          宽 = 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px' ?
+            parseInt(样式节点.leaf(2).first().token().content()) : -1;
         }
         else {
           宽 = 0;
         }
       }
       else if(键 == 'height') {
-        if(样式节点.leaf(2).size() > 1 && 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px') {
-          高 = parseInt(样式节点.leaf(2).first().token().content());
+        if(样式节点.leaf(2).size() > 1) {
+          高 = 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px' ?
+            parseInt(样式节点.leaf(2).first().token().content()) : -1;
         }
         else {
           高 = 0;

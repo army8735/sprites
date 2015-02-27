@@ -1,1 +1,1 @@
-module.exports = require('./build/Sprites');
+module.exports = require('./build/Sprites').default;
