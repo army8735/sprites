@@ -125,7 +125,7 @@ class Puzzle {
       css.背景列表.forEach(function(背景) {
         for(var i = 0; i < len; i++) {
           if(列表[i].图像 == 背景.引用.图像) {
-            背景.二级制索引 = i;
+            背景.二进制索引 = i;
             delete 背景.引用;
             return;
           }
