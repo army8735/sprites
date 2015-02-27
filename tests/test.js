@@ -155,10 +155,14 @@ describe('Parser', function() {
   });
 });
 
-describe('Puzzle', function() {
-
-});
-
 describe('Sprites', function() {
-
+  it.only('file', function() {
+    var css = [{
+      '路径': path.join(__dirname, './file/1.css')
+    }];
+    var sprites = new Sprites(css);
+    var res = sprites.解析();
+    console.log(JSON.stringify(css));
+    console.log(res)
+  });
 });
