@@ -75,8 +75,6 @@ class Puzzle {
                 break;
             }
             break;
-          default:
-            throw new Error('不支持的文件后缀名：' + 路径 + '\n' + css.路径);
         }
       });
     });
