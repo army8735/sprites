@@ -14,13 +14,19 @@ npm install sprites
 
 [![intro](https://raw.githubusercontent.com/army8735/sprites/master/intro.png)](https://github.com/army8735/sprites)
 
-## 使用说明
+## 特性
 * sprites自动分析传入css文件列表中的background部分，根据一定规则匹配出所有的背景图将之合并，即自动雪碧图
 * 解析语法树进行识别，保证准确性
 * 区分不同的图片格式，包括png8和png24
 * 区分高清图，即1倍和2倍
 * 提供底层接口，返回合并后的图片二进制数据，存储由应用层自己控制
 * 中文编码，ES6书写，转换为ES5
+
+## 使用说明
+* 构造器传入css列表
+* 调用`解析`方法获取拼好的二进制图像数据
+* 存储好图像后调用`替换`方法传入图像url
+* 获得其返回生成的css内容列表
 
 ## API
 
