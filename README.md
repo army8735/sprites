@@ -57,3 +57,6 @@ npm install sprites
 * 写根路径(根路径:String):void 设置根路径
 * 读间距():String 返回间距
 * 写间距(间距:int):void 设置间距
+
+### 静态属性
+* 添加关键字(关键字:String/Array\<String>):void 当底层css解析器无法识别新增的css样式关键字时，用此方法添加
