@@ -1,5 +1,7 @@
 var fs=require('fs');
 
+var homunculus=require('homunculus');
+
 var Parser=function(){var _0=require('./Parser');return _0.hasOwnProperty("Parser")?_0.Parser:_0.hasOwnProperty("default")?_0.default:_0}();
 var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzle")?_1.Puzzle:_1.hasOwnProperty("default")?_1.default:_1}();
 
@@ -65,6 +67,10 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
   Sprites.prototype.写间距 = function(间距) {
     this.间距 = 间距;
     return this.间距;
+  }
+
+  Sprites.添加关键字=function(关键字) {
+    homunculus.getClass('rule', 'css').addKeyWord(关键字);
   }
 
 

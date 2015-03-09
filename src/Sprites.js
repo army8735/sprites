@@ -1,5 +1,7 @@
 module fs from 'fs';
 
+module homunculus from 'homunculus';
+
 import Parser from './Parser';
 import Puzzle from './Puzzle';
 
@@ -65,6 +67,10 @@ class Sprites {
   写间距(间距) {
     this.间距 = 间距;
     return this.间距;
+  }
+
+  static 添加关键字(关键字) {
+    homunculus.getClass('rule', 'css').addKeyWord(关键字);
   }
 }
 

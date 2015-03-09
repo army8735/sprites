@@ -178,4 +178,12 @@ describe('Sprites', function() {
     //fs.writeFileSync(path.join(__dirname, './file/2.css'), res[0], { encoding: 'utf-8' });
     expect(res).to.eql([fs.readFileSync(path.join(__dirname, './file/2.css'), { encoding: 'utf-8' })]);
   });
+  it('new kw', function() {
+    Sprites.添加关键字('army');
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': 'div{army:1;background:url(xxx) no-repeat;}'
+    });
+    expect(res).to.eql([{"url":"xxx","开始":26,"结束":29,"倍率":1,"重复":"no-repeat","插入位置":30,"宽":-1,"高":-1}]);
+  });
 });
