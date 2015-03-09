@@ -62,13 +62,13 @@ var images=require('images');
             }
 
             var 重复数据 = 格式数据[背景.重复];
-            //不重复和repeat-x均纵向叠加，repeat-y横向叠加，间隔均为10
+            //repeat-x均纵向叠加，不重复和repeat-y横向叠加，间隔均为10
             switch(背景.重复) {
-              case 'no-repeat':
               case 'repeat-x':
                 重复数据.宽 = Math.max(重复数据.宽, 背景.图宽);
                 重复数据.高 += 背景.图高 + 间距;
                 break;
+              case 'no-repeat':
               case 'repeat-y':
                 重复数据.高 = Math.max(重复数据.高, 背景.图高);
                 重复数据.宽 += 背景.图宽 + 间距;
@@ -90,11 +90,11 @@ var images=require('images');
         var 引用 = 背景.引用;
         背景.位置索引 = 引用.索引;
         switch(背景.重复) {
-          case 'no-repeat':
           case 'repeat-x':
             引用.图像.draw(背景图, 0, 引用.索引);
             引用.索引 += 背景.图高;
             break;
+          case 'no-repeat':
           case 'repeat-y':
             引用.图像.draw(背景图, 引用.索引, 0);
             引用.索引 += 背景.图宽;

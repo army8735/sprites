@@ -35,11 +35,11 @@ var Puzzle=function(){var _1=require('./Puzzle');return _1.hasOwnProperty("Puzzl
       css.背景列表.reverse().forEach(function(背景) {
         //替换掉url和pos
         switch(背景.重复) {
-          case 'no-repeat':
           case 'repeat-x':
             内容 = 内容.slice(0, 背景.开始) + '"' + url列表[背景.二进制索引].replace(/"/g, '\\"') + '"'
               + 内容.slice(背景.结束, 背景.插入位置) + ' 0 ' + (背景.位置索引 ? -背景.位置索引 + 'px' : 0) + 内容.slice(背景.插入位置);
             break;
+          case 'no-repeat':
           case 'repeat-y':
             内容 = 内容.slice(0, 背景.开始) + '"' + url列表[背景.二进制索引].replace(/"/g, '\\"') + '"'
               + 内容.slice(背景.结束, 背景.插入位置) + ' ' + (背景.位置索引 ? -背景.位置索引 + 'px 0' : '0 0') + 内容.slice(背景.插入位置);
