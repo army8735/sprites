@@ -81,3 +81,11 @@
 .r {
   background:url('http://xxx') no-repeat;
 }
+
+@media screen and (device-pixel-ratio:2) {
+  .s {
+    width:10px;
+    height:10px;
+    background:url('s.png') no-repeat;
+  }
+}

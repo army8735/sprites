@@ -153,6 +153,14 @@ describe('Parser', function() {
     });
     expect(res).to.eql([]);
   });
+
+  it('device * 2', function() {
+    var parser = new Parser();
+    var res = parser.解析({
+      '内容': arr[18]
+    });
+    expect(res).to.eql([{"url":"s.png","开始":102,"结束":109,"倍率":2,"重复":"no-repeat","插入位置":110,"宽":20,"高":20}]);
+  });
 });
 
 describe('Sprites', function() {

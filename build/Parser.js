@@ -137,8 +137,8 @@ var Token = homunculus.getClass('token', 'css');
       '倍率': 倍率,
       '重复': repeat节点 ? repeat节点.token().content().toLowerCase() : 'no-repeat',
       '插入位置': 右括号.sIndex() + 右括号.content().length,
-      '宽': 宽,
-      '高': 高
+      '宽': 宽 * 倍率,
+      '高': 高 * 倍率
     });
   }
 
