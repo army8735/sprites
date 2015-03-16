@@ -20,3 +20,13 @@
 .f{
   background:url(/img/000.png) repeat-x;
 }
+
+.again{
+  background:url(../img/000.png) repeat-x;
+}
+
+.biga{
+  width:12px;
+  height:12px;
+  background:url(../img/FFF.png) no-repeat;
+}
