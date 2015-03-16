@@ -1,6 +1,6 @@
 {
   "name": "sprites",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "",
   "maintainers": [
     {
@@ -29,7 +29,7 @@
   "license": "MIT",
   "dependencies": {
     "homunculus": "^0.8.0",
-    "images": "^2.1.1"
+    "images": "^2.1.3"
   },
   "main": "./index",
   "engines": {
