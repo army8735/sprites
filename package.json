@@ -28,7 +28,7 @@
   "author": "army8735",
   "license": "MIT",
   "dependencies": {
-    "homunculus": "^0.7.9",
+    "homunculus": "^0.8.0",
     "images": "^2.1.1"
   },
   "main": "./index",
