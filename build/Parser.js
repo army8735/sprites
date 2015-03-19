@@ -203,12 +203,12 @@ var Token = homunculus.getClass('token', 'css');
           && 位置节点.token().type() == Token.NUMBER) {
           return;
         }
-        this.记录(url节点, 倍率, repeat节点, 宽, 高);
+        this.记录(url节点, 倍率, repeat节点, 宽, 高, 边距上, 边距右, 边距下, 边距左);
         return;
       }
     }
   }
-  Parser.prototype.记录 = function(url节点, 倍率, repeat节点, 宽, 高) {
+  Parser.prototype.记录 = function(url节点, 倍率, repeat节点, 宽, 高, 边距上, 边距右, 边距下, 边距左) {
     var token = url节点.token();
     var 右括号 = url节点.parent().last().token();
     this.列表.push({
@@ -219,7 +219,11 @@ var Token = homunculus.getClass('token', 'css');
       '重复': repeat节点 ? repeat节点.token().content().toLowerCase() : 'no-repeat',
       '插入位置': 右括号.sIndex() + 右括号.content().length,
       '宽': 宽 > 0 ? 宽 * 倍率 : 宽,
-      '高': 高 > 0 ? 高 * 倍率 : 高
+      '高': 高 > 0 ? 高 * 倍率 : 高,
+      '边距上': 边距上 > 0 ? 边距上 * 倍率 : 边距上,
+      '边距右': 边距右 > 0 ? 边距右 * 倍率 : 边距右,
+      '边距下': 边距下 > 0 ? 边距下 * 倍率 : 边距下,
+      '边距左': 边距左 > 0 ? 边距左 * 倍率 : 边距左
     });
   }
 

@@ -89,3 +89,23 @@
     background:url('s.png') no-repeat;
   }
 }
+
+.t {
+  padding:0 1px;
+  background:url('t.png') no-repeat;
+}
+
+.u {
+  padding:1px;
+  background:url('u.png') no-repeat;
+}
+
+.v {
+  padding:1px 3% 5px;
+  background:url('v.png') no-repeat;
+}
+
+.w {
+  padding:1px 2px 5px 3px;
+  background:url('w.png') no-repeat;
+}
