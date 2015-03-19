@@ -58,30 +58,111 @@ var Token = homunculus.getClass('token', 'css');
     //高宽可以省略，默认-1
     var 宽 = -1;
     var 高 = -1;
+    //边距可以为0
+    var 边距上 = 0;
+    var 边距右 = 0;
+    var 边距下 = 0;
+    var 边距左 = 0;
+    //遍历同级样式节点
     父节点.leaves().forEach(function(样式节点) {
       //忽略非style节点，如{}
       if(样式节点.name() != CssNode.STYLE) {
         return;
       }
       var 键 = 样式节点.first().first().token().content().toLowerCase();
+      var 值节点 = 样式节点.leaf(2);
       //仅支持px
-      if(键 == 'width') {
-        if(样式节点.leaf(2).size() > 1) {
-          宽 = 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px' ?
-            parseInt(样式节点.leaf(2).first().token().content()) : -1;
-        }
-        else {
-          宽 = 0;
-        }
-      }
-      else if(键 == 'height') {
-        if(样式节点.leaf(2).size() > 1) {
-          高 = 样式节点.leaf(2).leaf(1).token().content().toLowerCase() == 'px' ?
-            parseInt(样式节点.leaf(2).first().token().content()) : -1;
-        }
-        else {
-          高 = 0;
-        }
+      switch(键) {
+        case 'width':
+          if(值节点.size() > 1) {
+            宽 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            宽 = 0;
+          }
+          break;
+        case 'height':
+          if(值节点.size() > 1) {
+            高 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            高 = 0;
+          }
+          break;
+        case 'padding':
+          var 值 = [];
+          //遍历，按上右下左顺序进行，如果单位不为px，则视为0
+          值节点.leaves().forEach(function(node) {
+            var token = node.token();
+            if(token.type() == Token.NUMBER) {
+              var next = node.next().token();
+              if(next.type() == Token.UNITS) {
+                if(next.content() == 'px') {
+                  值.push(parseInt(token.content()));
+                  return;
+                }
+              }
+              值.push(0);
+            }
+          });
+          //2种缩写
+          if(值.length == 1) {
+            边距上 = 边距右 = 边距下 = 边距左 = 值[0];
+          }
+          else if(值.length == 2) {
+            边距上 = 边距下 = 值[0];
+            边距右 = 边距左 = 值[1];
+          }
+          else if(值.length == 3) {
+            边距上 = 值[0];
+            边距右 = 边距左 = 值[1];
+            边距下 = 值[2];
+          }
+          else if(值.length == 4) {
+            边距上 = 值[0];
+            边距右 = 值[1];
+            边距下 = 值[2];
+            边距左 = 值[3];
+          }
+          break;
+        case 'padding-top':
+          if(值节点.size() > 1) {
+            边距上 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            边距上 = 0;
+          }
+          break;
+        case 'padding-right':
+          if(值节点.size() > 1) {
+            边距右 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            边距右 = 0;
+          }
+          break;
+        case 'padding-bottom':
+          if(值节点.size() > 1) {
+            边距下 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            边距下 = 0;
+          }
+          break;
+        case 'padding-left':
+          if(值节点.size() > 1) {
+            边距左 = 值节点.leaf(1).token().content().toLowerCase() == 'px' ?
+              parseInt(值节点.first().token().content()) : -1;
+          }
+          else {
+            边距左 = 0;
+          }
+          break;
       }
     });
     //0高宽忽略
