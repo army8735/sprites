@@ -38,14 +38,14 @@
   "readmeFilename": "README.md",
   "devDependencies": {
     "blanket": "^1.1.6",
-    "coveralls": "^2.10.0",
+    "coveralls": "^2.11.2",
     "expect.js": "^0.3.1",
-    "gulp": "^3.6.0",
+    "gulp": "^3.8.8",
     "gulp-clean": "^0.2.4",
-    "gulp-util": "^2.2.14",
-    "jsdc": "^0.5.4",
+    "gulp-util": "^3.0.1",
+    "jsdc": "^0.5.7",
     "mocha": "^2.2.4",
     "mocha-lcov-reporter": "^0.0.2",
-    "through2": "^0.4.2"
+    "through2": "^0.6.1"
   }
 }
